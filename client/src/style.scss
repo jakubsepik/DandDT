@@ -5,29 +5,36 @@
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css);
 
 $shadow-color: #23203b;
-$input-color: lighten(#AB9E95, 10%);
-$input-border-color: #5E5165;
-$button-background-color: #27AE60;
+$input-color: lighten(#ab9e95, 10%);
+$input-border-color: #5e5165;
+$button-background-color: #27ae60;
 
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-html { 
-  background: url(https://dl.dropboxusercontent.com/u/159328383/background.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+.login {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(121, 37, 9, 1) 37%,
+    rgba(255, 0, 0, 1) 100%
+  );
 }
 
 body {
   background: transparent;
+  height: 100vh;
+  overflow:hidden;
 }
 
-body, input, button {
-  font-family: 'Source Sans Pro', sans-serif;
+body,
+input,
+button {
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 @mixin normalize-input {
@@ -128,24 +135,78 @@ body, input, button {
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
 }
 
-.float:hover, .float:focus, .float:active {
+.float:hover,
+.float:focus,
+.float:active {
   -webkit-transform: translateY(-3px);
   transform: translateY(-3px);
 }
 
-/* Large Devices, Wide Screens */
-
-@media only screen and (max-width : 1500px) {
+.editor {
+  border: 3px solid red;
 }
 
-@media only screen and (max-width : 1200px) {
+.selection {
+  padding: 0;
+  box-sizing: border-box;
+  max-height: 100vh;
+  background-color: yellowgreen;
+  padding-bottom: 3%;
+  .list-group-item{
+    padding: 3%;
+    background-color: yellowgreen;
+    box-sizing: border-box;
+    border:0;
+    &:not(:first-child):hover{
+      background-color: rgba(121,37,9,0.4);
+    }
+  }
+  overflow-y: scroll;
+}
+.list-group-item{
+  cursor: pointer;
+}
+.tags {
+  float: right;
+  padding: 0 3%;
+  * {
+    margin: 0 5px;
+    padding: 2% 3%;
+    border-radius: 15%;
+    color: white;
+  }
+  .item{
+    background-color:green;
+  }
+  .NPC{
+    background-color: red;
+  }
+  .place{
+    background-color: orange;
+  }
+  .organization{
+    background-color: purple;
+  }
+  .event {
+    background-color: blue;
+    color: white;
+  }
+
+}
+
+/* Large Devices, Wide Screens */
+
+@media only screen and (max-width: 1500px) {
+}
+
+@media only screen and (max-width: 1200px) {
   .login {
     width: 600px;
     font-size: 2em;
   }
 }
 
-@media only screen and (max-width : 1100px) {
+@media only screen and (max-width: 1100px) {
   .login {
     margin-top: 2%;
     width: 600px;
@@ -154,7 +215,7 @@ body, input, button {
 }
 
 /* Medium Devices, Desktops */
-@media only screen and (max-width : 992px) {
+@media only screen and (max-width: 992px) {
   .login {
     margin-top: 1%;
     width: 550px;
@@ -164,7 +225,7 @@ body, input, button {
 }
 
 /* Small Devices, Tablets */
-@media only screen and (max-width : 768px) {
+@media only screen and (max-width: 768px) {
   .login {
     margin-top: 0;
     width: 500px;
@@ -173,10 +234,9 @@ body, input, button {
   }
 }
 
-/* Extra Small Devices, Phones */ 
-@media only screen and (max-width : 480px) {
+/* Extra Small Devices, Phones */
+@media only screen and (max-width: 480px) {
   .login {
-
     h2 {
       margin-top: 0;
     }
@@ -188,8 +248,13 @@ body, input, button {
   }
 }
 
-/* Custom, iPhone Retina */ 
-@media only screen and (max-width : 320px) {
+.navbar{
+  margin-bottom: 0;
+}
+
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width: 320px) {
   .login {
     margin-top: 0;
     width: 200px;

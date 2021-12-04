@@ -15,6 +15,7 @@ const dbo = require("../db/conn");
 //verify token
 const jwt = require("jsonwebtoken")
 recordRoutes.route("/verify").get((req, res) => {
+  console.log("verify")
   if(!req.cookies.token){
     res.json({login:false})
   } else
