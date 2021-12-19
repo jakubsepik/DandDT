@@ -9,7 +9,7 @@ import { NavLink } from "react-router-dom";
 // Here, we display our Navbar
 const Navbar = () => {
   return (
-    <div>
+    <nav>
       <nav className="navbar navbar-expand-lg navbar-light bg-dark">
         <NavLink className="navbar-brand text-light" to="/">
           DanDT
@@ -33,7 +33,7 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
-    </div>
+    </nav>
   );
 };
 

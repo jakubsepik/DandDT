@@ -28,7 +28,7 @@ const authorization = (req, res, next) => {
 };
 
 recordRoutes.route("/getFile").post((req, res) => {
-  console.log("get file")
+  console.log("get file");
   console.log(req.body);
   let db_connect = dbo.getDb("DandDT");
   db_connect
@@ -43,14 +43,24 @@ recordRoutes.route("/getFile").post((req, res) => {
 });
 
 recordRoutes.route("/updateFile").post((req, res) => {
-  console.log("update")
+  console.log("update");
   console.log(req.body);
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .updateOne({ _id: ObjectId(req.body.id) }, { $set: { body: req.body.body } })
+    .updateOne(
+      { _id: ObjectId(req.body._id) },
+      {
+        $set: {
+          body: req.body.body,
+          name: req.body.name,
+          tags: req.body.tags,
+          links: req.body.links,
+        },
+      }
+    )
     .then((result) => {
-      res.status(200).json(result)
+      res.status(200).json(result);
     });
 });
 

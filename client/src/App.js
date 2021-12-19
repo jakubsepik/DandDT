@@ -30,7 +30,6 @@ export default class App extends Component {
   componentDidMount() {
     axios.get(target + "user/verify").then((res) => {
       var login = res.data.login;
-      console.log(login);
       if (login) this.setState({ login: true });
     });
   }
@@ -98,7 +97,6 @@ export default class App extends Component {
   );
 };
 render() {
-  console.log(this.state.login)
   return (
     <div>
       <Toaster />

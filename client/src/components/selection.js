@@ -18,22 +18,19 @@ class Edit extends Component {
     this.renderFile = this.renderFile.bind(this);
     this.createFile = this.createFile.bind(this);
     this.state = {
-      items: [],
+      selectionFilesArray:[],
       create_popup: false,
     };
   }
-
-  componentDidMount() {
-    axios.get(target + "getFiles").then((response) => {
-      console.log(response.data)
-      this.setState({ items: response.data });
-    });
+  
+  componentWillReceiveProps(nextProps){
+    this.setState({selectionFilesArray:nextProps.selectionFilesArray})
   }
   renderFile(e) {
     this.props.pass_id(e.currentTarget.attributes.getNamedItem("data-id").value)
   } 
   printFiles() {
-    return this.state.items.map((item) => {
+    return this.state.selectionFilesArray.map((item) => {
       let tags = [];
       if (item.hasOwnProperty("tags")) {
         item.tags.sort();
@@ -70,13 +67,13 @@ class Edit extends Component {
         };
         axios.defaults.withCredentials = true;
         axios.post(target + "addFile",json).then((response2)=>{
-          json["_id"]=response2.data
-          this.setState({items:this.state.items.concat(json)})
+          //json["_id"]=response2.data
+          //this.setState({selectionFilesArray:this.state.selectionFilesArray.concat(json)})
+          this.props.getFiles();
         })
         
       });
   }
-  // This following section will display the update-form that takes the input from the user to update the data.
   render() {
     return (
       <div className="selection col-3">
