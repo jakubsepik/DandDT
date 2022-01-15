@@ -1,9 +1,6 @@
 const { ObjectId } = require("bson");
 const express = require("express");
 
-// recordRoutes is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /record.
 const recordRoutes = express.Router();
 
 //env load
@@ -12,28 +9,30 @@ require("dotenv").config();
 //This will help us connect to the database
 const dbo = require("../db/conn");
 
+const jwt = require("jsonwebtoken")
+
 const authorization = (req, res, next) => {
+  console.log("authorzation")
   const token = req.cookies.token;
-  //return next()
   if (!token) {
     return res.sendStatus(401);
   }
   try {
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.user = data.username;
+    res.locals.user = data.username;
     return next();
-  } catch {
+  } catch(e) {
+    console.log(e)
     return res.sendStatus(401);
   }
 };
 
-recordRoutes.route("/getFile").post((req, res) => {
+recordRoutes.route("/getFile").post(authorization,(req, res) => {
   console.log("get file");
-  console.log(req.body);
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .findOne({ _id: ObjectId(req.body.id) })
+    .findOne({ _id: ObjectId(req.body.id), author:res.locals.user })
     .then((result) => {
       res.status(200).json(result);
     })
@@ -42,14 +41,13 @@ recordRoutes.route("/getFile").post((req, res) => {
     });
 });
 
-recordRoutes.route("/updateFile").post((req, res) => {
+recordRoutes.route("/updateFile").post(authorization,(req, res) => {
   console.log("update");
-  console.log(req.body);
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
     .updateOne(
-      { _id: ObjectId(req.body._id) },
+      { _id: ObjectId(req.body._id),author:res.locals.user },
       {
         $set: {
           body: req.body.body,
@@ -64,25 +62,32 @@ recordRoutes.route("/updateFile").post((req, res) => {
     });
 });
 
-recordRoutes.route("/getFiles").get((req, res) => {
+recordRoutes.route("/getFiles").get(authorization,(req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .find({}, { projection: { _id: 1, name: 1, tags: 1 } })
+    .find({author:res.locals.user}, { projection: { _id: 1, name: 1, tags: 1 } })
     .toArray((err, result) => {
-      console.log(result);
       res.json(result);
     });
 });
-recordRoutes.route("/addFile").post((req, res) => {
+recordRoutes.route("/addFile").post(authorization,(req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  console.log(req.body);
+  req.body.author=res.locals.user
   db_connect
     .collection("data")
     .insertOne(req.body)
     .then((result) => {
-      console.log(result);
       res.json(result.insertedId).status(200);
     });
+});
+recordRoutes.route("/deleteFile").post(authorization,(req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  console.log("deleted file")
+  db_connect
+    .collection("data").deleteOne({_id:ObjectId(req.body.id)},function(err,obj){
+      if(err) throw err
+      res.status(200).json({})
+    })
 });
 module.exports = recordRoutes;

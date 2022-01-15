@@ -1,36 +1,63 @@
 import React, { Component } from "react";
-// This will require to npm install axios
 import axios from "axios";
 import dotenv from "dotenv";
+import toast from "react-hot-toast";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
 const File = (props) => (
-  <li className="list-group-item w-100" onClick={props.renderFile} data-id={props.file._id}>
+  <li
+    className="list-group-item w-100"
+    onClick={props.renderFile}
+    data-id={props.file._id}
+  >
     <span>{props.file.name}</span>
     <span className="tags">{props.tags}</span>
+    <i className="fa fa-close close-icon" style={{marginLeft:"auto"}} onClick={props.deleteFile}/>
   </li>
 );
 class Edit extends Component {
-  // This is the constructor that stores the data.
   constructor(props) {
     super(props);
     this.printFiles = this.printFiles.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.createFile = this.createFile.bind(this);
+    this.deleteFile=this.deleteFile.bind(this);
+
+    this.onChange = this.onChange.bind(this);
     this.state = {
-      selectionFilesArray:[],
+      selectionFilesArray: [],
+      input: "",
       create_popup: false,
     };
   }
-  
-  componentWillReceiveProps(nextProps){
-    this.setState({selectionFilesArray:nextProps.selectionFilesArray})
+  deleteFile(e){
+    e.stopPropagation();
+    axios.post(target+"deleteFile",{id:e.target.parentNode.getAttribute("data-id")}).then((response)=>{
+      this.props.getFiles()
+    })
+  }
+  onChange(e) {
+    this.setState({
+      [e.target.id]: e.target.value,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ selectionFilesArray: nextProps.selectionFilesArray });
   }
   renderFile(e) {
-    this.props.pass_id(e.currentTarget.attributes.getNamedItem("data-id").value)
-  } 
+    this.props.pass_id(
+      e.currentTarget.attributes.getNamedItem("data-id").value
+    );
+  }
   printFiles() {
-    return this.state.selectionFilesArray.map((item) => {
+    var filtred = this.state.selectionFilesArray.filter((e) => {
+      return e.tags.filter(e=>e.match(new RegExp(this.state.input, "g")));
+    });
+    filtred = filtred.filter((e) => {
+      return e.name.match(new RegExp(this.state.input, "g"));
+    });
+    return filtred.map((item) => {
       let tags = [];
       if (item.hasOwnProperty("tags")) {
         item.tags.sort();
@@ -48,39 +75,37 @@ class Edit extends Component {
           tags={tags}
           key={item._id}
           renderFile={this.renderFile}
+          deleteFile={this.deleteFile}
         />
       );
     });
   }
   createFile() {
-    axios.defaults.withCredentials = false;
-    axios
-      .get("https://random-word-api.herokuapp.com/word?swear=0")
-      .then((response) => {
-        console.log(response.data);
-        var json = {
-          name: response.data[0],
-          author: "author",
-          body: "",
-          tags: [],
-          links: [],
-        };
-        axios.defaults.withCredentials = true;
-        axios.post(target + "addFile",json).then((response2)=>{
-          //json["_id"]=response2.data
-          //this.setState({selectionFilesArray:this.state.selectionFilesArray.concat(json)})
-          this.props.getFiles();
-        })
-        
-      });
+    var json = {
+      name: this.state.input===""?"File":this.state.input,
+      author: window.sessionStorage.getItem("user"),
+      body: "",
+      tags: [],
+      links: [],
+    };
+    axios.defaults.withCredentials = true;
+    axios.post(target + "addFile", json).then((response2) => {
+      this.setState({input:""})
+      this.props.getFiles();
+    });
   }
   render() {
     return (
       <div className="selection col-3">
         <ul className=" list-group">
-          <li className="list-group-item w-100">
-            <input type="text" />
-            <button onClick={this.createFile}>pridat</button>
+          <li className="list-group-item w-100 align-items-center">
+            <input
+              id="input"
+              type="text"
+              value={this.state.input}
+              onChange={this.onChange}
+            />
+            <i className="fa fa-plus-circle fa-2x" onClick={this.createFile} />
           </li>
           {this.printFiles()}
         </ul>

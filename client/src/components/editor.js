@@ -46,20 +46,28 @@ class Edit extends Component {
   }
 
   safeFile() {
-    var json = {
-      _id: this.state._id,
-      name: this.state.name,
-      author: this.state.author,
-      body: this.state.body,
-      tags: this.state.tags,
-      links: this.state.links,
-    };
-    if (this.state.changed === true)
-      axios.post(target + "updateFile", json).then((res) => {
-        console.log("update file");
-        console.log(this.state.selectionRerenderChanged)
-        if (this.state.selectionRerenderChanged) this.props.getFiles();
-      });
+    console.log(
+      "safe file: " +
+        this.state.changed +
+        " " +
+        this.state.selectionRerenderChanged
+    );
+    if (this.state.changed)
+      axios
+        .post(target + "updateFile", {
+          _id: this.state._id,
+          name: this.state.name,
+          author: this.state.author,
+          body: this.state.body,
+          tags: this.state.tags,
+          links: this.state.links,
+        })
+        .then((res) => {
+          if (this.state.selectionRerenderChanged) {
+            this.props.getFiles();
+            this.setState({ changed: false, selectionRerenderChanged: false });
+          } else this.setState({ changed: false });
+        });
   }
 
   onChange(e) {
@@ -80,14 +88,18 @@ class Edit extends Component {
     e.forEach((e) => {
       tmp.push(e.value);
     });
-    this.setState({ tags: tmp, changed: true, selectionRerenderChanged:true });
+    this.setState({ tags: tmp, changed: true, selectionRerenderChanged: true });
   }
   onChangeLinks(e) {
     var tmp = [];
     e.forEach((e) => {
       tmp.push(e.value);
     });
-    this.setState({ links: tmp, changed: true,selectionRerenderChanged:true });
+    this.setState({
+      links: tmp,
+      changed: true,
+      selectionRerenderChanged: true,
+    });
   }
   printTags(edit) {
     var value = [];
@@ -165,16 +177,18 @@ class Edit extends Component {
   render() {
     return this.state.edit ? (
       <div
-        className="editor"
+        className={"editor editor-" + this.props.editorsCount}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             this.setState({ edit: false });
+            this.safeFile();
             event.preventDefault();
             event.stopPropagation();
           }
         }}
         onDoubleClick={() => {
           this.setState({ edit: false });
+          this.safeFile();
         }}
       >
         <div className="top-wrapper">
@@ -185,12 +199,20 @@ class Edit extends Component {
           <input value={this.state.name} onChange={this.onChange} id="name" />
           <div>{this.printTags(true)}</div>
         </div>
-        <textarea id="body" value={this.state.body} onChange={this.onChange} />
+        <textarea
+          onBlur={() => {
+            this.safeFile();
+          }}
+          spellCheck="false"
+          id="body"
+          value={this.state.body}
+          onChange={this.onChange}
+        />
         <div>{this.printLinks(true)}</div>
       </div>
     ) : (
       <div
-        className="editor"
+        className={"editor editor-" + this.props.editorsCount}
         onDoubleClick={() => {
           this.setState({ edit: true });
         }}
@@ -204,6 +226,10 @@ class Edit extends Component {
           <div className="tags">{this.printTags(false)}</div>
         </div>
         <textarea
+          onBlur={() => {
+            this.safeFile();
+          }}
+          spellCheck="false"
           style={{ height: "60%" }}
           id="body"
           value={this.state.body}

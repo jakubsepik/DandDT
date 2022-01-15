@@ -12,51 +12,78 @@ require("dotenv").config();
 //This will help us connect to the database
 const dbo = require("../db/conn");
 
-//verify token
+const bcryptjs = require('bcryptjs');
 const jwt = require("jsonwebtoken")
+//verify token
+
 recordRoutes.route("/verify").get((req, res) => {
   console.log("verify")
   if(!req.cookies.token){
-    res.json({login:false})
+    res.json({login:null})
   } else
   try {
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
     req.user=data.username;
-    res.json({login:true})
+    res.json({login:data.username})
   } catch {
-    res.json({login:false})
+    res.json({login:null})
   }
-})
-
-recordRoutes.route("/ez").get((req,res)=>{
-    res.json({lol:"lol"})
 })
 
 
 //login in and get token
 
 recordRoutes.route("/login").post((req, res) => {
-  const bcryptjs = require('bcryptjs');
-  let db_connect = dbo.getDb("login")
+  let db_connect = dbo.getDb("DandDT")
   console.log("login")
-  myquery = { username: req.body.username }
-  db_connect.collection("data").findOne(myquery, async function (err, result) {
+  myquery = { email: req.body.email }
+  db_connect.collection("login").findOne(myquery, async function (err, result) {
     if (err) throw err;
-    var result = await bcryptjs.compare(req.body.password, result.password);
-    if (result) {
-      username = req.body.username;
+    var compare = await bcryptjs.compare(req.body.password, result.password);
+    if (compare) {
+      username = result.username;
       token = jwt.sign({username: username }, process.env.TOKEN_SECRET, { expiresIn: '1d' })
       res.status(202).cookie('token',token,{expires: new Date(new Date().getTime()+24*60*60*1000),httpOnly:true,secure: false}).send({
-        login:true
+        login:username
       });
     } else {
       res.send({
-        login:false
+        login:null
       })
     }
 
 
   });
+})
+
+recordRoutes.route("/logout").get((req,res)=>{
+  res.status(202).cookie('token',"", {expires: new Date(0)}).send({});
+})
+
+recordRoutes.route("/register").post((req, res) => {
+  let db_connect = dbo.getDb("DandDT")
+  console.log("register")
+  myquery = {$or:[{"username":req.body.username},{"email":req.body.email}]}
+  db_connect.collection("login").find(myquery,{ projection: { username: 1, email: 1} }).toArray((err,result)=>{
+    if(result.length>0){
+      if(result[0].username===req.body.username || result[1].username===req.body.username){
+        res.send({status:"error",message:"That username already exists"})
+        return
+      }
+      if(result[0].email===req.body.email || result[1].email===req.body.email){
+        res.send({status:"error",message:"That email is already registred"})
+        return
+      }
+    }else{
+      var password = bcryptjs.hash(req.body.password,10,(err,hash)=>{
+        if(err)throw err
+        db_connect.collection("login").insertOne({username:req.body.username,email:req.body.email,password:hash}).then((result)=>{
+          res.json({status:"sucess"});
+        })
+      })
+      
+    }
+  })
 })
 
 

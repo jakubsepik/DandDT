@@ -51,7 +51,7 @@ export default class Dashboard extends Component {
     }
     
     if(this.state.editorsArray.length===4 && target_index===undefined && to_index===-1){
-      toast.error("max 4 editory",{id:"error-max"})
+      toast("max 4 editory",{id:"error-same",icon:'⚠️'})
       return
     }
     
@@ -74,7 +74,7 @@ export default class Dashboard extends Component {
     return this.state.editorsArray.map(item=>{
       var selectionLinks=this.state.selectionFilesArray.map(({tags, ...keepAttrs}) => keepAttrs)
       return(
-        <Editor key={item._id} fileObject={item} selectionLinks={selectionLinks} closeEditor={this.closeEditor} pass_id={this.pass_id} getFiles={this.getFiles}/>
+        <Editor editorsCount={this.state.editorsArray.length} key={item._id} fileObject={item} selectionLinks={selectionLinks} closeEditor={this.closeEditor} pass_id={this.pass_id} getFiles={this.getFiles}/>
       )
     })
   }

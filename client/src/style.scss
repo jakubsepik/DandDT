@@ -121,6 +121,10 @@ button {
         animation: hop 1s;
       }
     }
+    div {
+      color: white;
+      cursor: pointer;
+    }
   }
 }
 
@@ -143,21 +147,41 @@ button {
 }
 nav {
   height: 10vh;
+  div {
+    color: white;
+  }
 }
 section {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
   padding-right: 0 !important;
   height: 90vh;
+  .editor-1 {
+    height: 100%;
+    width: 100%;
+  }
+  .editor-2 {
+    height: 100%;
+    width: 50%;
+  }
+  .editor-3:not(:last-child) {
+    width: 50%;
+    height: 50%;
+  }
+  .editor-3:last-child {
+    width: 100%;
+    height: 50%;
+  }
+  .editor-4 {
+    width: 50%;
+    height: 50%;
+  }
   .editor {
     background-color: rgba(0, 0, 0, 0.24);
     padding: 10px;
-    width: 50%;
     display: inline;
     border: 1px solid #006b88;
     border-collapse: collapse;
-    height: 45vh;
     .top-wrapper {
       display: flex;
       align-items: center;
@@ -244,9 +268,10 @@ section {
 .selection {
   padding: 0;
   box-sizing: border-box;
-  max-height: 100vh;
+  height: 100vh;
   background-color: yellowgreen;
   padding-bottom: 3%;
+  overflow-y: scroll;
   .list-group-item {
     padding: 3%;
     background-color: yellowgreen;
@@ -254,13 +279,24 @@ section {
     border: 0;
     display: flex;
     &:not(:first-child):hover {
+      cursor: pointer;
       background-color: rgba(121, 37, 9, 0.4);
+      i{
+         display:inline;
+      }
+      i:hover{
+        color:#006b88
+      }
+    }
+    &:first-child i {
+      padding: 0 10px;
+    }
+    &:not(:first-child) i{
+      display: none;
     }
   }
 }
-.list-group-item {
-  cursor: pointer;
-}
+
 .tags {
   float: right;
   padding: 0 3%;
