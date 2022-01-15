@@ -146,9 +146,25 @@ button {
   transform: translateY(-3px);
 }
 nav {
+  margin-bottom: 0;
   height: 10vh;
   div {
     color: white;
+  }
+  #user{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .fa-sign-out{
+    font-size: 1.5em;
+    color:white;
+    margin: 1%;
+    cursor: pointer;
+    &:hover{
+      color:red;
+    }
   }
 }
 section {
@@ -376,10 +392,6 @@ section {
     font-size: 1em;
     min-height: 0;
   }
-}
-
-.navbar {
-  margin-bottom: 0;
 }
 
 /* Custom, iPhone Retina */

@@ -66,12 +66,12 @@ recordRoutes.route("/register").post((req, res) => {
   myquery = {$or:[{"username":req.body.username},{"email":req.body.email}]}
   db_connect.collection("login").find(myquery,{ projection: { username: 1, email: 1} }).toArray((err,result)=>{
     if(result.length>0){
-      if(result[0].username===req.body.username || result[1].username===req.body.username){
-        res.send({status:"error",message:"That username already exists"})
-        return
-      }
       if(result[0].email===req.body.email || result[1].email===req.body.email){
         res.send({status:"error",message:"That email is already registred"})
+        return
+      }
+      if(result[0].username===req.body.username || result[1].username===req.body.username){
+        res.send({status:"error",message:"That username is already registred"})
         return
       }
     }else{

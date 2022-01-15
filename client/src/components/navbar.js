@@ -15,19 +15,18 @@ const Navbar = () => {
   return (
     <nav>
       <nav className="navbar navbar-expand-lg navbar-light bg-dark">
-        <div className="navbar-brand text-light">
-          DanDT
-        </div>
-        
-
+        <div className="navbar-brand text-light">DanDT</div>
+        <span id="user">
         <div>Welcome {window.sessionStorage.getItem("user")}</div>
-        <button onClick={()=>{
-          axios.get(target + "user/logout").then((res)=>{
-            window.sessionStorage.removeItem("user")
-          window.location.reload()
-          })
-          
-        }}>Logout</button>
+        <i
+          className="fa fa-sign-out"
+          onClick={() => {
+            axios.get(target + "user/logout").then((res) => {
+              window.sessionStorage.removeItem("user");
+              window.location.reload();
+            });
+          }}
+        title="Logout"></i></span>
       </nav>
     </nav>
   );
