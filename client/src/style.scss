@@ -9,6 +9,11 @@ $input-color: lighten(#ab9e95, 10%);
 $input-border-color: #5e5165;
 $button-background-color: #27ae60;
 
+$color1: #222831; 
+$color2: #393e46; 
+$color3: #0092ca; 
+$color4: #eeeeee; 
+
 * {
   margin: 0;
   padding: 0;
@@ -26,7 +31,7 @@ $button-background-color: #27ae60;
 }
 
 body {
-  background: transparent;
+  background: $color1;
   height: 100vh;
   overflow: hidden;
 }
@@ -146,24 +151,24 @@ button {
   transform: translateY(-3px);
 }
 nav {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
   height: 10vh;
   div {
     color: white;
   }
-  #user{
+  #user {
     display: flex;
     height: 100%;
     justify-content: center;
     align-items: center;
   }
-  .fa-sign-out{
+  .fa-sign-out {
     font-size: 1.5em;
-    color:white;
+    color: white;
     margin: 1%;
     cursor: pointer;
-    &:hover{
-      color:red;
+    &:hover {
+      color: red;
     }
   }
 }
@@ -196,7 +201,7 @@ section {
     background-color: rgba(0, 0, 0, 0.24);
     padding: 10px;
     display: inline;
-    border: 1px solid #006b88;
+    border: 1px solid $color3;
     border-collapse: collapse;
     .top-wrapper {
       display: flex;
@@ -210,6 +215,8 @@ section {
       width: 100%;
       height: 65%;
       resize: none;
+      color:$color4;
+      background-color: $color1;
     }
     i {
       font-size: 1.5em;
@@ -281,35 +288,53 @@ section {
   }
 }
 
+.row{
+  height: 90vh;
+}
 .selection {
+  position: relative;
   padding: 0;
   box-sizing: border-box;
-  height: 100vh;
-  background-color: yellowgreen;
-  padding-bottom: 3%;
-  overflow-y: scroll;
-  .list-group-item {
-    padding: 3%;
-    background-color: yellowgreen;
-    box-sizing: border-box;
-    border: 0;
-    display: flex;
-    &:not(:first-child):hover {
-      cursor: pointer;
-      background-color: rgba(121, 37, 9, 0.4);
-      i{
-         display:inline;
+  height: 100%;
+  ul{
+    //overflow-y: auto;
+    height: 100%;
+    .list-group-item {
+      padding: 3%;
+      background-color: $color2;
+      color:$color4;
+      box-sizing: border-box;
+      border: 0;
+      &:not(:first-child):hover {
+        cursor: pointer;
+        background-color: rgba(121, 37, 9, 0.4);
+        i {
+          padding: 0 1%;
+          display: inline;
+        }
+        i:hover {
+          color: #006b88;
+        }
       }
-      i:hover{
-        color:#006b88
+      &:first-child {
+        i {
+          font-size: 20px;
+          padding-left: 2%;
+        }
+        input {
+          width: 80%;
+        }
+      }
+      &:not(:first-child) i {
+        display: none;
       }
     }
-    &:first-child i {
-      padding: 0 10px;
-    }
-    &:not(:first-child) i{
-      display: none;
-    }
+  }
+  .tool {
+    position: absolute;
+    background-color: red;
+    width: 100%;
+    bottom: 0;
   }
 }
 

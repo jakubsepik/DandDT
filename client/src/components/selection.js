@@ -97,9 +97,9 @@ class Edit extends Component {
   render() {
     return (
       <div className="selection col-3">
-        <ul className=" list-group">
+        <ul className="overflow-auto">
           <li className="list-group-item w-100 align-items-center">
-            <input
+            <input 
               id="input"
               type="text"
               value={this.state.input}
@@ -109,6 +109,7 @@ class Edit extends Component {
           </li>
           {this.printFiles()}
         </ul>
+        <div className="tool">Hello</div>
       </div>
     );
   }

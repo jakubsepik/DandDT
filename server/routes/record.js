@@ -85,9 +85,13 @@ recordRoutes.route("/deleteFile").post(authorization,(req, res) => {
   let db_connect = dbo.getDb("DandDT");
   console.log("deleted file")
   db_connect
-    .collection("data").deleteOne({_id:ObjectId(req.body.id)},function(err,obj){
+    .collection("data").deleteOne({_id:ObjectId(req.body.id),author:res.locals.user },function(err,obj){
       if(err) throw err
-      res.status(200).json({})
+      
     })
+  db_connect.collection("data").updateMany({author:res.locals.user },{$pull:{links:req.body.id}},(err,obj)=>{
+    if(err)throw err
+    res.status(200).json({})
+  })
 });
 module.exports = recordRoutes;

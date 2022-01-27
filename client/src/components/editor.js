@@ -133,6 +133,7 @@ class Edit extends Component {
     var value = [];
     if (!edit) {
       this.state.links.forEach((element) => {
+        var a = this.props.selectionLinks.find((e) => e._id === element)||{name:"deleted"}
         value.push(
           <button
             className="button-3"
@@ -141,8 +142,10 @@ class Edit extends Component {
               this.safeFile();
               this.pass_id(element, this.state._id);
             }}
-          >
-            {this.props.selectionLinks.find((e) => e._id === element).name}
+          > 
+            {//this.props.selectionLinks.find((e) => e._id === element).name
+              a.name
+            }
           </button>
         );
       });
