@@ -39,7 +39,14 @@ recordRoutes.route("/login").post((req, res) => {
   myquery = { email: req.body.email }
   db_connect.collection("login").findOne(myquery, async function (err, result) {
     if (err) throw err;
+    if(result!=null)
     var compare = await bcryptjs.compare(req.body.password, result.password);
+    else{
+      res.send({
+        login:null
+      })
+      return
+    }
     if (compare) {
       username = result.username;
       token = jwt.sign({username: username }, process.env.TOKEN_SECRET, { expiresIn: '1d' })
@@ -78,7 +85,7 @@ recordRoutes.route("/register").post((req, res) => {
       var password = bcryptjs.hash(req.body.password,10,(err,hash)=>{
         if(err)throw err
         db_connect.collection("login").insertOne({username:req.body.username,email:req.body.email,password:hash}).then((result)=>{
-          res.json({status:"sucess"});
+          res.json({status:"success"});
         })
       })
       

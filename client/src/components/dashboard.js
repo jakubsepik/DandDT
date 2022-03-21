@@ -3,8 +3,10 @@ import axios from "axios";
 import Navbar from "../components/navbar";
 import Editor from "../components/editor";
 import Selection from "../components/selection";
+//import DraftEditor from "../components/draftEditor"
 import toast from "react-hot-toast";
 import dotenv from "dotenv";
+
 
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
@@ -14,9 +16,11 @@ export default class Dashboard extends Component {
     super(props);
     this.state = {
       editorsArray:[],
-      selectionFilesArray:[]
+      selectionFilesArray:[],
     };
     this.linkToFiles=[]
+    this.focus_id=null;
+    this.setFocus=this.setFocus.bind(this);
     this.pass_id = this.pass_id.bind(this);
     this.printEditors = this.printEditors.bind(this);
     this.closeEditor = this.closeEditor.bind(this);
@@ -31,7 +35,9 @@ export default class Dashboard extends Component {
       this.setState({selectionFilesArray:response.data})
     })
   }
-  
+  setFocus(id){
+    this.focus_id=id;
+  }
   closeEditor(id){
     var filtred = this.state.editorsArray.filter((el)=>{
       return el._id!==id;
@@ -42,8 +48,6 @@ export default class Dashboard extends Component {
   }
   pass_id(to_id,from_id=undefined) {
     let target_index = from_id?this.state.editorsArray.findIndex(e=>e._id===from_id):undefined;
-    console.log(target_index)
-    
     let to_index=this.state.editorsArray.findIndex(e=>e._id===to_id)
     if(to_index!==-1 && from_id!==undefined){
       toast.error("editor otvoreny",{id:"error-same"})
@@ -66,32 +70,30 @@ export default class Dashboard extends Component {
       else{
         tmp[target_index]=res.data
       }
-      console.log(tmp)
+      this.focus_id=tmp[0]._id
       this.setState({ editorsArray: tmp });
     });
   }
   printEditors(){
     return this.state.editorsArray.map(item=>{
       var selectionLinks=this.state.selectionFilesArray.map(({tags, ...keepAttrs}) => keepAttrs)
-      return(
-        <Editor editorsCount={this.state.editorsArray.length} key={item._id} fileObject={item} selectionLinks={selectionLinks} closeEditor={this.closeEditor} pass_id={this.pass_id} getFiles={this.getFiles}/>
-      )
+      return( 
+       <Editor setFocus={this.setFocus} editorsCount={this.state.editorsArray.length} key={item._id} fileObject={item} selectionLinks={selectionLinks} closeEditor={this.closeEditor} pass_id={this.pass_id} getFiles={this.getFiles}/>
+      ) 
     })
   }
   
   render() {
+    console.log(this.focus_id)
     return (
       <div className="">
         <Navbar />
         <div className="row">
           <section className="col-9">
-            
             {this.printEditors()}
-          </section>
-            
-            <Selection pass_id={this.pass_id} getFiles={this.getFiles}  selectionFilesArray={this.state.selectionFilesArray}/>
           
-         
+          </section>
+            <Selection pass_id={this.pass_id} getFiles={this.getFiles}  selectionFilesArray={this.state.selectionFilesArray}/>
         </div>
       </div>
     );

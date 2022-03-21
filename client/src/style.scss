@@ -20,18 +20,10 @@ $color4: #eeeeee;
   box-sizing: border-box;
 }
 
-.login {
-  background: rgb(2, 0, 36);
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(121, 37, 9, 1) 37%,
-    rgba(255, 0, 0, 1) 100%
-  );
-}
 
 body {
-  background: $color1;
+  background: rgb(1,71,167);
+  background: radial-gradient(circle, rgba(1,71,167,1) 0%, rgba(34,40,49,1) 80%); 
   height: 100vh;
   overflow: hidden;
 }
@@ -222,6 +214,10 @@ section {
       font-size: 1.5em;
       cursor: pointer;
       padding-bottom: 15px;
+      color:#6b1e1e;
+    }
+    i:hover{
+      color:red;
     }
     .name {
       display: inline;
@@ -297,7 +293,7 @@ section {
   box-sizing: border-box;
   height: 100%;
   ul{
-    //overflow-y: auto;
+    background-color: $color2;
     height: 100%;
     .list-group-item {
       padding: 3%;
@@ -311,6 +307,7 @@ section {
         i {
           padding: 0 1%;
           display: inline;
+          float: right;
         }
         i:hover {
           color: #006b88;
@@ -323,6 +320,7 @@ section {
         }
         input {
           width: 80%;
+          background-color: $color1;
         }
       }
       &:not(:first-child) i {
@@ -339,7 +337,6 @@ section {
 }
 
 .tags {
-  float: right;
   padding: 0 3%;
   * {
     margin: 0 5px;

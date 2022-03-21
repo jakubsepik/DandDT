@@ -6,13 +6,12 @@ const recordRoutes = express.Router();
 //env load
 require("dotenv").config();
 
-//This will help us connect to the database
+//connection to database
 const dbo = require("../db/conn");
 
 const jwt = require("jsonwebtoken")
 
 const authorization = (req, res, next) => {
-  console.log("authorzation")
   const token = req.cookies.token;
   if (!token) {
     return res.sendStatus(401);
@@ -22,13 +21,11 @@ const authorization = (req, res, next) => {
     res.locals.user = data.username;
     return next();
   } catch(e) {
-    console.log(e)
     return res.sendStatus(401);
   }
 };
 
 recordRoutes.route("/getFile").post(authorization,(req, res) => {
-  console.log("get file");
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
@@ -42,7 +39,6 @@ recordRoutes.route("/getFile").post(authorization,(req, res) => {
 });
 
 recordRoutes.route("/updateFile").post(authorization,(req, res) => {
-  console.log("update");
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
@@ -66,7 +62,7 @@ recordRoutes.route("/getFiles").get(authorization,(req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .find({author:res.locals.user}, { projection: { _id: 1, name: 1, tags: 1 } })
+    .find({author:res.locals.user}, { projection: { _id: 1, name: 1, tags: 1 } }).sort({name:1})
     .toArray((err, result) => {
       res.json(result);
     });
@@ -84,10 +80,10 @@ recordRoutes.route("/addFile").post(authorization,(req, res) => {
 recordRoutes.route("/deleteFile").post(authorization,(req, res) => {
   let db_connect = dbo.getDb("DandDT");
   console.log("deleted file")
+  console.log(req.body)
   db_connect
     .collection("data").deleteOne({_id:ObjectId(req.body.id),author:res.locals.user },function(err,obj){
       if(err) throw err
-      
     })
   db_connect.collection("data").updateMany({author:res.locals.user },{$pull:{links:req.body.id}},(err,obj)=>{
     if(err)throw err

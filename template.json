@@ -1,8 +1,16 @@
 {
+  "item":{
     "_id":"_id",
     "name":"name",
     "author":"author",
     "body":"body",
     "tags":["item,NPC,place,organization,event"],
     "links":["link"]
+},
+"user":{
+    "email":"email",
+    "name":"name"
+},
+"todo":"random name generator"
 }
+

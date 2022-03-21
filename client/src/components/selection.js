@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import toast from "react-hot-toast";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
+var deleteConfirm=null;
 const File = (props) => (
   <li
     className="list-group-item w-100"
@@ -12,7 +13,18 @@ const File = (props) => (
   >
     <span>{props.file.name}</span>
     <span className="tags">{props.tags}</span>
-    <i className="fa fa-close close-icon" style={{marginLeft:"auto"}} onClick={props.deleteFile}/>
+    <i className="fa fa-close close-icon" onClick={(e)=>{
+      var date = new Date()
+      if(deleteConfirm && date.getTime()-deleteConfirm.getTime()<4000){
+      props.deleteFile(e);
+      deleteConfirm=null;
+      }
+      else{
+        toast("Click again for removal of file")
+        deleteConfirm=date
+      }
+    }
+    }/>
   </li>
 );
 class Edit extends Component {
@@ -29,6 +41,7 @@ class Edit extends Component {
       input: "",
       create_popup: false,
     };
+
   }
   deleteFile(e){
     e.stopPropagation();

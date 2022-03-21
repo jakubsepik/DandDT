@@ -193,6 +193,8 @@ class Edit extends Component {
           this.setState({ edit: false });
           this.safeFile();
         }}
+        onClick={()=>{this.props.setFocus(this.props.fileObject._id)
+        }}
       >
         <div className="top-wrapper">
           <i
@@ -218,6 +220,8 @@ class Edit extends Component {
         className={"editor editor-" + this.props.editorsCount}
         onDoubleClick={() => {
           this.setState({ edit: true });
+        }}
+        onClick={()=>{this.props.setFocus(this.props.fileObject._id)
         }}
       >
         <div className="top-wrapper">

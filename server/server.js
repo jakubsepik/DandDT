@@ -8,10 +8,10 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: process.env.FRONTEND_IP, credentials: true }));
 app.use(express.json());
 
-app.use("/user", require("./routes/user"));
-app.use("/", require("./routes/record"));
+app.use("/user", require("../server/routes/user"));
+app.use("/", require("../server/routes/record"));
 
-const dbo = require("./db/conn.js");
+const dbo = require("../server/db/conn.js");
 
 app.listen(port, () => {
   dbo.connectToServer(function (err) {
