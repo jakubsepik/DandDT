@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import toast from "react-hot-toast";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
-var deleteConfirm=null;
+var deleteConfirm = null;
 const File = (props) => (
   <li
     className="list-group-item w-100"
@@ -13,18 +13,19 @@ const File = (props) => (
   >
     <span>{props.file.name}</span>
     <span className="tags">{props.tags}</span>
-    <i className="fa fa-close close-icon" onClick={(e)=>{
-      var date = new Date()
-      if(deleteConfirm && date.getTime()-deleteConfirm.getTime()<4000){
-      props.deleteFile(e);
-      deleteConfirm=null;
-      }
-      else{
-        toast("Click again for removal of file")
-        deleteConfirm=date
-      }
-    }
-    }/>
+    <i
+      className="fa fa-close close-icon"
+      onClick={(e) => {
+        var date = new Date();
+        if (deleteConfirm && date.getTime() - deleteConfirm.getTime() < 4000) {
+          props.deleteFile(e);
+          deleteConfirm = null;
+        } else {
+          toast("Click again for removal of file");
+          deleteConfirm = date;
+        }
+      }}
+    />
   </li>
 );
 class Edit extends Component {
@@ -33,7 +34,7 @@ class Edit extends Component {
     this.printFiles = this.printFiles.bind(this);
     this.renderFile = this.renderFile.bind(this);
     this.createFile = this.createFile.bind(this);
-    this.deleteFile=this.deleteFile.bind(this);
+    this.deleteFile = this.deleteFile.bind(this);
 
     this.onChange = this.onChange.bind(this);
     this.state = {
@@ -41,13 +42,16 @@ class Edit extends Component {
       input: "",
       create_popup: false,
     };
-
   }
-  deleteFile(e){
+  deleteFile(e) {
     e.stopPropagation();
-    axios.post(target+"deleteFile",{id:e.target.parentNode.getAttribute("data-id")}).then((response)=>{
-      this.props.getFiles()
-    })
+    axios
+      .post(target + "deleteFile", {
+        id: e.target.parentNode.getAttribute("data-id"),
+      })
+      .then((response) => {
+        this.props.getFiles();
+      });
   }
   onChange(e) {
     this.setState({
@@ -59,13 +63,14 @@ class Edit extends Component {
     this.setState({ selectionFilesArray: nextProps.selectionFilesArray });
   }
   renderFile(e) {
-    this.props.pass_id(
+    this.props.openEditor(
+      0,
       e.currentTarget.attributes.getNamedItem("data-id").value
     );
   }
   printFiles() {
     var filtred = this.state.selectionFilesArray.filter((e) => {
-      return e.tags.filter(e=>e.match(new RegExp(this.state.input, "g")));
+      return e.tags.filter((e) => e.match(new RegExp(this.state.input, "g")));
     });
     filtred = filtred.filter((e) => {
       return e.name.match(new RegExp(this.state.input, "g"));
@@ -95,7 +100,7 @@ class Edit extends Component {
   }
   createFile() {
     var json = {
-      name: this.state.input===""?"File":this.state.input,
+      name: this.state.input === "" ? "File" : this.state.input,
       author: window.sessionStorage.getItem("user"),
       body: "",
       tags: [],
@@ -103,7 +108,7 @@ class Edit extends Component {
     };
     axios.defaults.withCredentials = true;
     axios.post(target + "addFile", json).then((response2) => {
-      this.setState({input:""})
+      this.setState({ input: "" });
       this.props.getFiles();
     });
   }
@@ -112,7 +117,7 @@ class Edit extends Component {
       <div className="selection col-3">
         <ul className="overflow-auto">
           <li className="list-group-item w-100 align-items-center">
-            <input 
+            <input
               id="input"
               type="text"
               value={this.state.input}

@@ -10,7 +10,10 @@
 "user":{
     "email":"email",
     "name":"name"
-},
-"todo":"random name generator"
 }
+}
+random name generator, prerobit otvaranie a focus na editory, pridat oznacenie otvorenym editorom
+
+
+
 

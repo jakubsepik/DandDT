@@ -34,11 +34,10 @@ class Edit extends Component {
     this.onChangeTags = this.onChangeTags.bind(this);
 
     this.closeEditor = this.props.closeEditor.bind(this);
-    this.pass_id = this.props.pass_id.bind(this);
+    this.openEditor = this.props.openEditor.bind(this);
   }
 
   componentWillUnmount() {
-    console.log("editore unmounted");
     window.addEventListener("beforeunload", (ev) => {
       this.safeFile();
     });
@@ -46,12 +45,6 @@ class Edit extends Component {
   }
 
   safeFile() {
-    console.log(
-      "safe file: " +
-        this.state.changed +
-        " " +
-        this.state.selectionRerenderChanged
-    );
     if (this.state.changed)
       axios
         .post(target + "updateFile", {
@@ -140,7 +133,7 @@ class Edit extends Component {
             key={element}
             onClick={() => {
               this.safeFile();
-              this.pass_id(element, this.state._id);
+              this.openEditor(0,element, this.state._id);
             }}
           > 
             {//this.props.selectionLinks.find((e) => e._id === element).name
