@@ -110,6 +110,7 @@ class Edit extends Component {
     axios.post(target + "addFile", json).then((response2) => {
       this.setState({ input: "" });
       this.props.getFiles();
+      this.props.openEditor(0,response2.data);
     });
   }
   render() {
