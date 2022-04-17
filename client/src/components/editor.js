@@ -42,6 +42,7 @@ class Edit extends Component {
       this.safeFile();
     });
     this.safeFile();
+    console.log("unmounting")
   }
 
   safeFile() {
@@ -173,7 +174,7 @@ class Edit extends Component {
   render() {
     return this.state.edit ? (
       <div
-        className={"editor editor-" + this.props.editorsCount}
+        className={"editor editor-1"}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             this.setState({ edit: false });
@@ -210,7 +211,7 @@ class Edit extends Component {
       </div>
     ) : (
       <div
-        className={"editor editor-" + this.props.editorsCount}
+        className={"editor editor-1"}
         onDoubleClick={() => {
           this.setState({ edit: true });
         }}

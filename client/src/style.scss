@@ -169,30 +169,35 @@ section {
   flex-wrap: wrap;
   padding-right: 0 !important;
   height: 90vh;
-  .editor-1 {
-    height: 100%;
+  .tabs{
+    background-color: red;
     width: 100%;
-  }
-  .editor-2 {
-    height: 100%;
-    width: 50%;
-  }
-  .editor-3:not(:last-child) {
-    width: 50%;
-    height: 50%;
-  }
-  .editor-3:last-child {
-    width: 100%;
-    height: 50%;
-  }
-  .editor-4 {
-    width: 50%;
-    height: 50%;
+    height:5%;
+    overflow-x:hidden ;
+    .tab{
+      padding: 3px;
+      height: 100%;
+      width: 25%;
+      background-color: #27ae60;
+      display: inline-block;
+      i {
+        font-size: 1.5em;
+        cursor: pointer;
+        padding-bottom: 15px;
+        color:#6b1e1e;
+        float:right;
+      }
+      i:hover{
+        color:red;
+      }
+    }
   }
   .editor {
+    width: 100%;
+    height: 95%;
     background-color: rgba(0, 0, 0, 0.24);
     padding: 10px;
-    display: inline;
+    display: block;
     border: 1px solid $color3;
     border-collapse: collapse;
     .top-wrapper {
@@ -361,6 +366,8 @@ section {
     color: white;
   }
 }
+
+
 
 /* Large Devices, Wide Screens */
 
