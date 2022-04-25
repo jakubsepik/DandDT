@@ -45,6 +45,7 @@ class Edit extends Component {
   }
   deleteFile(e) {
     e.stopPropagation();
+    this.props.closeEditor(e.target.parentNode.getAttribute("data-id"))
     axios
       .post(target + "deleteFile", {
         id: e.target.parentNode.getAttribute("data-id"),
