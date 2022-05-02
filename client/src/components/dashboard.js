@@ -142,6 +142,7 @@ export default class Dashboard extends Component {
           <Selection
             openEditor={this.openEditor}
             getFiles={this.getFiles}
+            closeEditor={this.closeEditor}
             selectionFilesArray={this.state.selectionFilesArray}
           />
         </div>

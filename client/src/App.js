@@ -70,6 +70,7 @@ export default class App extends Component {
         username: this.state.username,
         email:this.state.email,
         password: this.state.password,
+        selectionTree:{}
       })
       .then((res) => {
         if(res.data.status==="error"){

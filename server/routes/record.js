@@ -9,7 +9,7 @@ require("dotenv").config();
 //connection to database
 const dbo = require("../db/conn");
 
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
   const token = req.cookies.token;
@@ -20,16 +20,16 @@ const authorization = (req, res, next) => {
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
     res.locals.user = data.username;
     return next();
-  } catch(e) {
+  } catch (e) {
     return res.sendStatus(401);
   }
 };
 
-recordRoutes.route("/getFile").post(authorization,(req, res) => {
+recordRoutes.route("/getFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .findOne({ _id: ObjectId(req.body.id), author:res.locals.user })
+    .findOne({ _id: ObjectId(req.body.id), author: res.locals.user })
     .then((result) => {
       res.status(200).json(result);
     })
@@ -38,12 +38,12 @@ recordRoutes.route("/getFile").post(authorization,(req, res) => {
     });
 });
 
-recordRoutes.route("/updateFile").post(authorization,(req, res) => {
+recordRoutes.route("/updateFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
     .updateOne(
-      { _id: ObjectId(req.body._id),author:res.locals.user },
+      { _id: ObjectId(req.body._id), author: res.locals.user },
       {
         $set: {
           body: req.body.body,
@@ -58,36 +58,104 @@ recordRoutes.route("/updateFile").post(authorization,(req, res) => {
     });
 });
 
-recordRoutes.route("/getFiles").get(authorization,(req, res) => {
+recordRoutes.route("/getFiles").get(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .find({author:res.locals.user}, { projection: { _id: 1, name: 1, tags: 1 } }).sort({name:1})
+    .find(
+      { author: res.locals.user },
+      { projection: { _id: 1, name: 1, tags: 1 } }
+    )
+    .sort({ name: 1 })
     .toArray((err, result) => {
       res.json(result);
     });
 });
-recordRoutes.route("/addFile").post(authorization,(req, res) => {
+recordRoutes.route("/addFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  req.body.author=res.locals.user
+  req.body.author = res.locals.user;
   db_connect
     .collection("data")
     .insertOne(req.body)
     .then((result) => {
-      res.json(result.insertedId).status(200);
+      db_connect
+        .collection("login")
+        .updateOne(
+          { username: res.locals.user },
+          {
+            $push: {
+              selectionTree: {
+                $each: [result.insertedId],
+                $position: 0,
+              },
+            },
+          }
+        )
+        .catch((err) => {
+          res.status(500).json(err);
+          throw err;
+        })
+        .then(() => {
+          res.json(result.insertedId).status(200);
+        });
     });
 });
-recordRoutes.route("/deleteFile").post(authorization,(req, res) => {
+recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  console.log("deleted file")
-  console.log(req.body)
+  console.log("deleted file");
+  console.log(req.body);
   db_connect
-    .collection("data").deleteOne({_id:ObjectId(req.body.id),author:res.locals.user },function(err,obj){
-      if(err) throw err
-    })
-  db_connect.collection("data").updateMany({author:res.locals.user },{$pull:{links:req.body.id}},(err,obj)=>{
-    if(err)throw err
-    res.status(200).json({})
-  })
+    .collection("data")
+    .deleteOne(
+      { _id: ObjectId(req.body.id), author: res.locals.user },
+      function (err, obj) {
+        if (err) throw err;
+      }
+    );
+  db_connect
+    .collection("data")
+    .updateMany(
+      { author: res.locals.user },
+      { $pull: { links: req.body.id } },
+      (err, obj) => {
+        if (err) throw err;
+        res.status(200).json({});
+      }
+    );
 });
+recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("login")
+    .findOne({ username: res.locals.user }, function (err, obj) {
+      if (err) throw err;
+      if (obj.selectionTree) res.status(200).json(obj.selectionTree);
+      else {
+        db_connect
+          .collection("data")
+          .find({ author: res.locals.user }, { projection: { _id: 1 } }).toArray((err,result)=>{
+            const array = [];
+            result.forEach(element => {
+              array.push(element._id)
+            });
+            db_connect.collection("login").updateOne({username: res.locals.user},{$set:{selectionTree:array}})
+            res.status(200).json(array);
+          })
+      }
+    });
+});
+recordRoutes.route("/updateSelectionTree").post(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("login")
+    .updateOne(
+      { username: res.locals.user },
+      { $set: { selectionTree: req.body.selectionTree } },
+      function (err, result) {
+        if (err) throw err;
+        res.status(200).json(result);
+      }
+    );
+});
+
 module.exports = recordRoutes;
