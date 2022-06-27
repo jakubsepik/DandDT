@@ -130,4 +130,7 @@ dist
 #build folder
 build/
 
+#htmlbuild test folder
+htmlbuild/
+
 # End of https://www.toptal.com/developers/gitignore/api/node
