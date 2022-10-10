@@ -22,7 +22,7 @@ recordRoutes.route("/verify").get((req, res) => {
     res.json({login:null})
   } else
   try {
-    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const data = jwt.verify(req.cookies.token, process.env.TOKEN_SECRET);
     req.user=data.username;
     res.json({login:data.username})
   } catch {

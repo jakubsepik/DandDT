@@ -42,7 +42,7 @@ class Edit extends Component {
       this.safeFile();
     });
     this.safeFile();
-    console.log("unmounting")
+    console.log("unmounting");
   }
 
   safeFile() {
@@ -95,9 +95,9 @@ class Edit extends Component {
       selectionRerenderChanged: true,
     });
   }
-  printTags(edit) {
+  printTags() {
     var value = [];
-    if (!edit) {
+    if (!this.state.edit) {
       this.state.tags.forEach((tag) => {
         value.push(
           <span className={tag} key={tag}>
@@ -123,21 +123,24 @@ class Edit extends Component {
       />
     );
   }
-  printLinks(edit) {
+  printLinks() {
     var value = [];
-    if (!edit) {
+    if (!this.state.edit) {
       this.state.links.forEach((element) => {
-        var a = this.props.selectionLinks.find((e) => e._id === element)||{name:"deleted"}
+        var a = this.props.selectionLinks.find((e) => e._id === element) || {
+          name: "deleted",
+        };
         value.push(
           <button
-            className="button-3"
+            className="text-white bg-quaternary mx-2 rounded-xl py-1 px-3 hover:brightness-110"
             key={element}
             onClick={() => {
               this.safeFile();
-              this.openEditor(0,element, this.state._id);
+              this.openEditor(0, element, this.state._id);
             }}
-          > 
-            {//this.props.selectionLinks.find((e) => e._id === element).name
+          >
+            {
+              //this.props.selectionLinks.find((e) => e._id === element).name
               a.name
             }
           </button>
@@ -172,11 +175,11 @@ class Edit extends Component {
   }
 
   render() {
-    return this.state.edit ? (
-      <div
-        className={"editor editor-1"}
+    return (
+      <span
+        className="h-full w-full inline-block px-4"
         onKeyDown={(event) => {
-          if (event.key === "Escape") {
+          if (event.key === "Escape" && this.state.edit) {
             this.setState({ edit: false });
             this.safeFile();
             event.preventDefault();
@@ -184,19 +187,29 @@ class Edit extends Component {
           }
         }}
         onDoubleClick={() => {
-          this.setState({ edit: false });
-          this.safeFile();
+          if (this.state.edit) {
+            this.setState({ edit: false });
+            this.safeFile();
+          } else this.setState({ edit: true });
         }}
-        onClick={()=>{this.props.setFocus(this.props.fileObject._id)
+        onClick={() => {
+          this.props.setFocus(this.props.fileObject._id);
         }}
       >
-        <div className="top-wrapper">
-          <i
-            className="fa fa-close"
-            onClick={() => this.closeEditor(this.state._id)}
-          ></i>
-          <input value={this.state.name} onChange={this.onChange} id="name" />
-          <div>{this.printTags(true)}</div>
+        <div className="flex h-[12%] items-center">
+          <div className="text-white font-['Georgia'] font-semibold text-lg px-4">
+            {this.state.edit ? (
+              <input
+                className="bg-transparent border-b-[1px] border-b-quaternary outline-none text-white"
+                value={this.state.name}
+                onChange={this.onChange}
+                id="name"
+              />
+            ) : (
+              this.state.name
+            )}
+          </div>
+          <div className={!this.state.edit?"tags ml-auto":"ml-auto"}>{this.printTags()}</div>
         </div>
         <textarea
           onBlur={() => {
@@ -206,38 +219,10 @@ class Edit extends Component {
           id="body"
           value={this.state.body}
           onChange={this.onChange}
+          className="text-white h-2/3 w-full block bg-transparent backdrop-brightness-125 resize-none rounded"
         />
-        <div>{this.printLinks(true)}</div>
-      </div>
-    ) : (
-      <div
-        className={"editor editor-1"}
-        onDoubleClick={() => {
-          this.setState({ edit: true });
-        }}
-        onClick={()=>{this.props.setFocus(this.props.fileObject._id)
-        }}
-      >
-        <div className="top-wrapper">
-          <i
-            className="fa fa-close"
-            onClick={() => this.closeEditor(this.state._id)}
-          ></i>
-          <div className="name">{this.state.name}</div>
-          <div className="tags">{this.printTags(false)}</div>
-        </div>
-        <textarea
-          onBlur={() => {
-            this.safeFile();
-          }}
-          spellCheck="false"
-          style={{ height: "60%" }}
-          id="body"
-          value={this.state.body}
-          onChange={this.onChange}
-        />
-        <div>{this.printLinks(false)}</div>
-      </div>
+        <div className="mt-6">{this.printLinks()}</div>
+      </span>
     );
   }
 }

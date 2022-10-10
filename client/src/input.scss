@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-gradient {
+  background: rgb(3, 46, 106);
+  /*background: linear-gradient(
+    0deg,
+    rgba(3, 46, 106, 1) 0%,
+    rgb(10, 25, 51) 80%
+  );*/
+}
+.login-title {
+  color: #ffd05a;
+  font-weight: 900;
+  font-size: 35px;
+}
+.custom-font {
+  font-family: "Filson Pro", sans-serif;
+}
+.tags {
+  padding: 0 3%;
+  * {
+    margin: 0 5px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .item {
+    background-color: green;
+  }
+  .NPC {
+    background-color: red;
+  }
+  .place {
+    background-color: orange;
+  }
+  .organization {
+    background-color: purple;
+  }
+  .event {
+    background-color: blue;
+  }
+}

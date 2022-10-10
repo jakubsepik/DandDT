@@ -3,6 +3,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import File from "../components/file";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
 
@@ -22,14 +23,13 @@ class Edit extends Component {
       create_popup: false,
     };
   }
-  deleteFile(e) {
-    e.stopPropagation();
-    this.props.closeEditor(e.target.parentNode.getAttribute("data-id"));
+  deleteFile(_id) {
     axios
       .post(target + "deleteFile", {
-        id: e.target.parentNode.getAttribute("data-id"),
+        id: _id,
       })
       .then((response) => {
+        this.props.closeEditor(_id);
         this.props.getFiles();
       });
   }
@@ -46,17 +46,16 @@ class Edit extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({ selectionFilesArray: nextProps.selectionFilesArray });
   }
-  renderFile(e) {
-    this.props.openEditor(
-      0,
-      e.currentTarget.attributes.getNamedItem("data-id").value
-    );
+  renderFile(_id) {
+    this.props.openEditor(0, _id);
   }
-  updateSelectionTree(){
-
-  }
+  updateSelectionTree() {}
   printFiles() {
-    if (!this.state.selectionFilesArray.length||this.state.selectionFilesArray.length === 0) return null;
+    if (
+      !this.state.selectionFilesArray.length ||
+      this.state.selectionFilesArray.length === 0
+    )
+      return null;
     return this.state.selectionTree.map((element, index) => {
       if (element.constructor === Object) {
         return null;
@@ -86,15 +85,15 @@ class Edit extends Component {
           });
         }
         return (
-              <File
-                file={item}
-                tags={tags}
-                key={item._id}
-                renderFile={this.renderFile}
-                deleteFile={this.deleteFile}
-                _id={item._id}
-                index={index}
-                />
+          <File
+            file={item}
+            tags={tags}
+            key={item._id}
+            renderFile={this.renderFile}
+            deleteFile={this.deleteFile}
+            _id={item._id}
+            index={index}
+          />
         );
       }
     });
@@ -117,34 +116,46 @@ class Edit extends Component {
   }
   render() {
     return (
-      <div className="selection col-3">
-        <DragDropContext onDragEnd={(result)=>{
-          if (!result.destination) return;
-          const tmp = this.state.selectionTree[result.source.index]
-          this.state.selectionTree[result.source.index]=this.state.selectionTree[result.destination.index]
-          this.state.selectionTree[result.destination.index]=tmp;
-          axios.post(target + "updateSelectionTree",{selectionTree:this.state.selectionTree}).then((response) => {
-            
-          });
-        }}>
+      <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
+        <DragDropContext
+          onDragEnd={(result) => {
+            if (!result.destination) return;
+            const tmp = this.state.selectionTree[result.source.index];
+            this.state.selectionTree[result.source.index] =
+              this.state.selectionTree[result.destination.index];
+            this.state.selectionTree[result.destination.index] = tmp;
+            axios
+              .post(target + "updateSelectionTree", {
+                selectionTree: this.state.selectionTree,
+              })
+              .then((response) => {});
+          }}
+        >
           <Droppable droppableId="characters">
             {(provided) => (
               <ul
-                className="overflow-auto characters"
+                className="w-full h-full overflow-x-hidden"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <li className="list-group-item w-100 align-items-center">
+                <li className="flex items-center py-2 px-1">
+                  <div className="text-quaternary text-xl w-[10%]">
+                    <AiOutlineSearch />
+                  </div>
                   <input
                     id="input"
                     type="text"
                     value={this.state.input}
                     onChange={this.onChange}
+                    placeholder="Search..."
+                    className="w-[80%] transition-all mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none focus:placeholder:text-transparent text-white focus:border-quaternary focus:rounded-2xl"
                   />
-                  <i
-                    className="fa fa-plus-circle fa-2x"
+                  <div
+                    className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl"
                     onClick={this.createFile}
-                  />
+                  >
+                    <AiFillPlusCircle />
+                  </div>
                 </li>
                 {this.printFiles()}
                 {provided.placeholder}
@@ -152,7 +163,7 @@ class Edit extends Component {
             )}
           </Droppable>
         </DragDropContext>
-        <div className="tool">Hello</div>
+        <div className="absolute hidden">Hello</div>
       </div>
     );
   }

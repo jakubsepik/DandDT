@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-
-// We use Route in order to define the different routes of our application
+import { FaUserAlt } from "react-icons/fa";
+import { MdPassword,MdEmail } from "react-icons/md";
 import { Route } from "react-router-dom";
 
 // We import all the components we need in our app
@@ -8,7 +8,7 @@ import Dashboard from "./components/dashboard";
 
 import axios from "axios";
 import toast from "react-hot-toast";
-import "./style.scss";
+import "./output.scss";
 import { Toaster } from "react-hot-toast";
 axios.defaults.withCredentials = true;
 require("dotenv").config();
@@ -27,7 +27,7 @@ export default class App extends Component {
     this.state = {
       interface: 0, //0=login;1=register;2=dashboard
       username: "",
-      email:"",
+      email: "",
       password: "",
     };
   }
@@ -37,7 +37,9 @@ export default class App extends Component {
       var login = res.data.login;
       if (login) {
         window.sessionStorage.setItem("user", login);
-        this.setState({ login: true });
+        this.setState({ interface: 2 });
+      }else{
+        this.setState({interface:0})
       }
     });
   }
@@ -59,7 +61,7 @@ export default class App extends Component {
         if (!login) toast.error("Wrong email or password");
         else {
           window.sessionStorage.setItem("user", login);
-          this.setState({ interface:2 });
+          this.setState({ interface: 2 });
         }
       });
   }
@@ -68,123 +70,146 @@ export default class App extends Component {
     axios
       .post(target + "user/register", {
         username: this.state.username,
-        email:this.state.email,
+        email: this.state.email,
         password: this.state.password,
-        selectionTree:{}
+        selectionTree: {},
       })
       .then((res) => {
-        if(res.data.status==="error"){
-          toast.error(res.data.message)
-        }else{
-          toast.success("Register Succesful")
-          this.setState({interface:0})
+        if (res.data.status === "error") {
+          toast.error(res.data.message);
+        } else {
+          toast.success("Register Succesful");
+          this.setState({ interface: 0 });
         }
       });
   }
   Register() {
     return (
-      <div className="login">
-        <div className="heading">
-          <h2>Register</h2>
+      <div className="h-screen bg-gradient relative">
+        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+          <h2 className="text-center login-title custom-font my-5">Create account</h2>
           <form onSubmit={this.onRegister}>
-            <div className="input-group input-group-lg">
-              <span className="input-group-addon">
-                <i className="fa fa-user"></i>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+              <span className="absolute top-1/2 -translate-y-1/2 p-2">
+                <FaUserAlt />
               </span>
               <input
                 onChange={this.onChange}
                 value={this.state.username}
                 id="username"
                 type="text"
-                className="form-control"
+                className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Username"
                 required
               />
             </div>
-
-            <div className="input-group input-group-lg">
-              <span className="input-group-addon">
-                <i className="fa fa-envelope"></i>
+            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+              <span className="absolute top-1/2 -translate-y-1/2 p-2">
+                <MdEmail /> 
               </span>
               <input
                 onChange={this.onChange}
                 value={this.state.email}
                 id="email"
                 type="email"
-                className="form-control"
+                className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Email"
                 required
               />
             </div>
 
-            <div className="input-group input-group-lg">
-              <span className="input-group-addon">
-                <i className="fa fa-lock"></i>
+            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+              <span className="absolute top-1/2 -translate-y-1/2 p-2">
+                <MdPassword />
               </span>
               <input
                 onChange={this.onChange}
                 value={this.state.password}
                 id="password"
                 type="password"
-                className="form-control"
+                className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Password"
                 required
               />
             </div>
 
-            <button type="submit" className="float">
+            <button
+              type="submit"
+              className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+            >
               Register
             </button>
-            <div onClick={()=>{this.setState({ interface: 0 })}}>
-              Already have an account? Login here.
+            <div className="text-white text-center">
+              Already have an account? Login {}
+              <span
+                onClick={() => {
+                  this.setState({ interface: 0 });
+                }}
+                className="cursor-pointer underline"
+              >
+                here
+              </span>
+              .
             </div>
           </form>
         </div>
       </div>
     );
   }
-  
+
   Login() {
     return (
-      <div className="login">
-        <div className="heading">
-          <h2>Sign in</h2>
+      <div className="h-screen bg-gradient relative">
+        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+          <h2 className="text-center login-title custom-font my-5">Sign in</h2>
           <form onSubmit={this.onLogin}>
-            <div className="input-group input-group-lg">
-              <span className="input-group-addon">
-                <i className="fa fa-user"></i>
+            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+              <span className="absolute top-1/2 -translate-y-1/2 p-2">
+                <MdEmail />
               </span>
               <input
                 onChange={this.onChange}
                 value={this.state.email}
                 id="email"
                 type="email"
-                className="form-control"
+                className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Email"
                 required
               />
             </div>
 
-            <div className="input-group input-group-lg">
-              <span className="input-group-addon">
-                <i className="fa fa-lock"></i>
+            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+              <span className="absolute top-1/2 -translate-y-1/2 p-2">
+                <MdPassword />
               </span>
               <input
                 onChange={this.onChange}
                 value={this.state.password}
                 id="password"
                 type="password"
-                className="form-control"
+                className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Password"
                 required
               />
             </div>
 
-            <button type="submit" className="float">
+            <button
+              type="submit"
+              className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+            >
               Login
             </button>
-            <div onClick={()=>{this.setState({ interface: 1 })}}>
-              Not having an account? Register here.
+            <div className="text-white">
+              Don't have an account? Register {}
+              <span
+                onClick={() => {
+                  this.setState({ interface: 1 });
+                }}
+                className="cursor-pointer underline"
+              >
+                here
+              </span>
+              .
             </div>
           </form>
         </div>
@@ -193,7 +218,7 @@ export default class App extends Component {
   }
   render() {
     return (
-      <div>
+      <>
         <Toaster />
         <Route exact path="/">
           {() => {
@@ -209,7 +234,7 @@ export default class App extends Component {
             }
           }}
         </Route>
-      </div>
+      </>
     );
   }
 }

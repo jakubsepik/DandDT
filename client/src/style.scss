@@ -169,6 +169,7 @@ section {
   flex-wrap: wrap;
   padding-right: 0 !important;
   height: 90vh;
+  width: 80vw;
   .tabs{
     background-color: red;
     width: 100%;
@@ -297,17 +298,20 @@ section {
   padding: 0;
   box-sizing: border-box;
   height: 100%;
+  width: 20vw;
   ul{
     background-color: $color2;
     height: 100%;
     .list-group-item {
+      height: 40px;
       padding: 3%;
+      width: 100%;
       background-color: $color2;
       color:$color4;
       box-sizing: border-box;
       border: 0;
       &:not(:first-child):hover {
-        cursor: pointer;
+        cursor: pointer !important;
         background-color: rgba(121, 37, 9, 0.4);
         i {
           padding: 0 1%;

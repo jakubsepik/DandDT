@@ -15,9 +15,9 @@ export default class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorsArray: [],
-      selectionFilesArray: [],
-      currentEditor: null,
+      editorsArray: [], //tabs to open editors
+      selectionFilesArray: [], //all files for selection with id,name,tags
+      currentEditor: null, //current open editor id
     };
     this.linkToFiles = [];
     this.focus_id = null;
@@ -41,9 +41,9 @@ export default class Dashboard extends Component {
     this.focus_id = id;
   }
   closeEditor(id) {
-    if (this.state.currentEditor._id === id) {
+    if (this.state.currentEditor && this.state.currentEditor._id === id) {
       if (this.state.editorsArray.length > 1)
-        this.openEditor(0,this.state.editorsArray[0]._id);
+        this.openEditor(0, this.state.editorsArray[0]._id);
       else this.setState({ currentEditor: null });
     }
     var filtred = this.state.editorsArray.filter((el) => {
@@ -106,6 +106,7 @@ export default class Dashboard extends Component {
       this.setState({ editorsArray: tmp });
     });
     */
+
   }
   printEditorsTabs() {
     return this.state.editorsArray.map((item) => {
@@ -122,22 +123,24 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div className="">
+      <div className="bg-primary h-screen ">
         <Navbar />
-        <div className="row">
-          <section className="col-9">
-            <div className="tabs">{this.printEditorsTabs()}</div>
-            {this.state.currentEditor ? (
-              <Editor
-                key={this.state.currentEditor._id}
-                setFocus={this.setFocus}
-                fileObject={this.state.currentEditor}
-                selectionLinks={this.state.selectionFilesArray}
-                closeEditor={this.closeEditor}
-                openEditor={this.openEditor}
-                getFiles={this.getFiles}
-              />
-            ) : null}
+        <div className="w-screen h-[94%] flex">
+          <section className="w-[80%] h-full">
+            <div className="h-[6%] flex border-b-[1px] border-border">{this.printEditorsTabs()}</div>
+            <div className={"h-[94%] w-full bg-secondary"}>
+              {this.state.currentEditor ? (
+                <Editor
+                  key={this.state.currentEditor._id}
+                  setFocus={this.setFocus}
+                  fileObject={this.state.currentEditor}
+                  selectionLinks={this.state.selectionFilesArray}
+                  closeEditor={this.closeEditor}
+                  openEditor={this.openEditor}
+                  getFiles={this.getFiles}
+                />
+              ) : null}
+            </div>
           </section>
           <Selection
             openEditor={this.openEditor}

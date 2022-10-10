@@ -43,7 +43,7 @@ class EditorContainer extends Component{
 
   render(){
     const { editorState } = this.state;
-    return <div className='editor'>
+    return <div className=''>
       <Editor
         editorState={editorState}
         onEditorStateChange={this.onEditorStateChange}    
