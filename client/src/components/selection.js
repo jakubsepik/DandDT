@@ -18,7 +18,7 @@ class Edit extends Component {
     this.onChange = this.onChange.bind(this);
     this.state = {
       selectionFilesArray: [],
-      input: "",
+      filter: "",
       selectionTree: [],
       create_popup: false,
     };
@@ -72,7 +72,34 @@ class Edit extends Component {
         let item = this.state.selectionFilesArray.find(
           (x) => x._id === element
         );
-        if (!item) return null;
+        let normalize_filter = this.state.filter
+          .normalize("NFD")
+          .replace(/\p{Diacritic}/gu, "")
+          .toLowerCase()
+          .trim();
+        if (
+          !(
+            item &&
+            (item.name
+              .normalize("NFD")
+              .replace(/\p{Diacritic}/gu, "")
+              .toLowerCase()
+              .trim()
+              .includes(normalize_filter) ||
+              item.tags.some((tag) => {
+                if (
+                  tag
+                    .normalize("NFD")
+                    .replace(/\p{Diacritic}/gu, "")
+                    .toLowerCase()
+                    .trim()
+                    .includes(normalize_filter)
+                )
+                  return true;
+              }))
+          )
+        )
+          return null;
         let tags = [];
         if (item.hasOwnProperty("tags")) {
           item.tags.sort();
@@ -143,7 +170,7 @@ class Edit extends Component {
                     <AiOutlineSearch />
                   </div>
                   <input
-                    id="input"
+                    id="filter"
                     type="text"
                     value={this.state.input}
                     onChange={this.onChange}
