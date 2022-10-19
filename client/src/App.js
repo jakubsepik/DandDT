@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FaUserAlt } from "react-icons/fa";
-import { MdPassword,MdEmail } from "react-icons/md";
+import { MdPassword, MdEmail } from "react-icons/md";
 import { Route } from "react-router-dom";
 
 // We import all the components we need in our app
@@ -38,8 +38,8 @@ export default class App extends Component {
       if (login) {
         window.sessionStorage.setItem("user", login);
         this.setState({ interface: 2 });
-      }else{
-        this.setState({interface:0})
+      } else {
+        this.setState({ interface: 0 });
       }
     });
   }
@@ -72,24 +72,25 @@ export default class App extends Component {
         username: this.state.username,
         email: this.state.email,
         password: this.state.password,
-        selectionTree: {},
       })
       .then((res) => {
-        if (res.data.status === "error") {
-          toast.error(res.data.message);
-        } else {
-          toast.success("Register Succesful");
-          this.setState({ interface: 0 });
-        }
+        toast.success("Register Succesful");
+        this.setState({ interface: 0 });
+      })
+      .catch((error) => {
+        console.log(error);
+        //toast.error(res.data.message);
       });
   }
   Register() {
     return (
       <div className="h-screen bg-gradient relative">
         <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
-          <h2 className="text-center login-title custom-font my-5">Create account</h2>
+          <h2 className="text-center login-title custom-font my-5">
+            Create account
+          </h2>
           <form onSubmit={this.onRegister}>
-          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
               <span className="absolute top-1/2 -translate-y-1/2 p-2">
                 <FaUserAlt />
               </span>
@@ -101,11 +102,13 @@ export default class App extends Component {
                 className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Username"
                 required
+                minLength="3"
+                maxLength="12"
               />
             </div>
             <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
               <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <MdEmail /> 
+                <MdEmail />
               </span>
               <input
                 onChange={this.onChange}
@@ -130,6 +133,8 @@ export default class App extends Component {
                 className="w-full bg-transparent pl-10 py-1 rounded"
                 placeholder="Password"
                 required
+                minLength="3"
+                maxLength="22"
               />
             </div>
 
