@@ -1,11 +1,13 @@
 import React from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import { DropdownButton, Dropdown } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 
 require("dotenv").config();
+
 const target = process.env.REACT_APP_HOST_BACKEND;
+
 const Navbar = () => {
   return (
     <nav className="flex bg-tertiary h-[6%] items-center border-b-[1px] border-border">

@@ -66,14 +66,30 @@ recordRoutes.route("/getFiles").get(authorization, (req, res) => {
       { author: res.locals.user },
       { projection: { _id: 1, name: 1, tags: 1 } }
     )
-    .sort({ name: 1 })
     .toArray((err, result) => {
       res.json(result);
     });
 });
 recordRoutes.route("/addFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
+  //console.log(req.body)
+  if (
+    !(
+      Object.keys(req.body).length === 1 &&
+      req.body.name &&
+      req.body.name.length >= 1
+    )
+  ) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
   req.body.author = res.locals.user;
+  req.body.body = "";
+  req.body.tags = [];
+  req.body.links = [];
+
   db_connect
     .collection("data")
     .insertOne(req.body)
@@ -104,24 +120,58 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   console.log("deleted file");
   console.log(req.body);
+  if (!req.body._id || !ObjectId.isValid(req.body._id)) {
+    res
+      .status(400)
+      .send({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
   db_connect
     .collection("data")
-    .deleteOne(
-      { _id: ObjectId(req.body.id), author: res.locals.user },
-      function (err, obj) {
-        if (err) throw err;
+    .deleteOne({ _id: ObjectId(req.body._id), author: res.locals.user })
+    .then((result) => {
+      if (result.deletedCount === 1) {
+        db_connect
+          .collection("data")
+          .updateMany(
+            { author: res.locals.user },
+            { $pull: { links: req.body._id } },
+            (err, obj) => {
+              console.log(obj)
+              if (err) throw err;
+            }
+          );
+
+        db_connect
+          .collection("login")
+          .updateOne(
+            { username: res.locals.user },
+            { $pull: { selectionTree: ObjectId(req.body._id) } }
+          )
+          .then((result2) => {
+            console.log(result2)
+          })
+          .catch((err) => {
+            throw err;
+          });
+
+        res.status(202).send();
+      } else {
+        res
+          .status(400)
+          .send({
+            message:
+              "Wrong parameters. Refresh page and try again",
+          });
+        return;
       }
-    );
-  db_connect
-    .collection("data")
-    .updateMany(
-      { author: res.locals.user },
-      { $pull: { links: req.body.id } },
-      (err, obj) => {
-        if (err) throw err;
-        res.status(200).json({});
-      }
-    );
+    })
+    .catch((err) => {
+      res
+        .status(400)
+        .send({ message: "Wrong parameters. Refresh page and try again" });
+      throw err;
+    });
 });
 recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
@@ -133,14 +183,20 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
       else {
         db_connect
           .collection("data")
-          .find({ author: res.locals.user }, { projection: { _id: 1 } }).toArray((err,result)=>{
+          .find({ author: res.locals.user }, { projection: { _id: 1 } })
+          .toArray((err, result) => {
             const array = [];
-            result.forEach(element => {
-              array.push(element._id)
+            result.forEach((element) => {
+              array.push(element._id);
             });
-            db_connect.collection("login").updateOne({username: res.locals.user},{$set:{selectionTree:array}})
+            db_connect
+              .collection("login")
+              .updateOne(
+                { username: res.locals.user },
+                { $set: { selectionTree: array } }
+              );
             res.status(200).json(array);
-          })
+          });
       }
     });
 });

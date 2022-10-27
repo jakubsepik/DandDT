@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import File from "../components/file";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
+import toast from "react-hot-toast";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
 
@@ -26,16 +27,17 @@ class Edit extends Component {
   deleteFile(_id) {
     axios
       .post(target + "deleteFile", {
-        id: _id,
+        _id: _id,
       })
       .then((response) => {
         this.props.closeEditor(_id);
         this.props.getFiles();
+        toast.success("File deleted")
       });
   }
   onChange(e) {
     this.setState({
-      [e.target.id]: e.target.value,
+      filter: e.target.value,
     });
   }
   componentDidMount() {
@@ -56,9 +58,11 @@ class Edit extends Component {
       this.state.selectionFilesArray.length === 0
     )
       return null;
+    //console.log(this.state.selectionTree);
     return this.state.selectionTree.map((element, index) => {
       if (element.constructor === Object) {
-        return null;
+        //console.log(element);
+        return false;
         /*
           <Directory
             key={element.name}
@@ -72,31 +76,34 @@ class Edit extends Component {
         let item = this.state.selectionFilesArray.find(
           (x) => x._id === element
         );
+        console.log(item)
         let normalize_filter = this.state.filter
           .normalize("NFD")
           .replace(/\p{Diacritic}/gu, "")
           .toLowerCase()
           .trim();
+        if (!item) {
+          return false;
+        }
         if (
           !(
-            item &&
-            (item.name
+            item.name
               .normalize("NFD")
               .replace(/\p{Diacritic}/gu, "")
               .toLowerCase()
               .trim()
               .includes(normalize_filter) ||
-              item.tags.some((tag) => {
-                if (
-                  tag
-                    .normalize("NFD")
-                    .replace(/\p{Diacritic}/gu, "")
-                    .toLowerCase()
-                    .trim()
-                    .includes(normalize_filter)
-                )
-                  return true;
-              }))
+            item.tags.some((tag) => {
+              if (
+                tag
+                  .normalize("NFD")
+                  .replace(/\p{Diacritic}/gu, "")
+                  .toLowerCase()
+                  .trim()
+                  .includes(normalize_filter)
+              )
+                return true;
+            })
           )
         )
           return null;
@@ -127,17 +134,13 @@ class Edit extends Component {
   }
   createFile() {
     var json = {
-      name: this.state.input === "" ? "File" : this.state.input,
-      author: window.sessionStorage.getItem("user"),
-      body: "",
-      tags: [],
-      links: [],
+      name: !this.state.filter ? "File" : this.state.filter,
     };
     axios.defaults.withCredentials = true;
     axios.post(target + "addFile", json).then((response2) => {
       this.props.getFiles();
       this.state.selectionTree.unshift(response2.data);
-      this.setState({ input: "" });
+      this.setState({ filter: "" });
       this.props.openEditor(0, response2.data);
     });
   }
@@ -147,10 +150,12 @@ class Edit extends Component {
         <DragDropContext
           onDragEnd={(result) => {
             if (!result.destination) return;
-            const tmp = this.state.selectionTree[result.source.index];
-            this.state.selectionTree[result.source.index] =
-              this.state.selectionTree[result.destination.index];
-            this.state.selectionTree[result.destination.index] = tmp;
+            this.state.selectionTree.slice(
+              result.destination.index,
+              0,
+              this.state.selectionTree[result.source.index]
+            );
+            //delete this.state.selectionTree[result.source.index]
             axios
               .post(target + "updateSelectionTree", {
                 selectionTree: this.state.selectionTree,
@@ -172,7 +177,7 @@ class Edit extends Component {
                   <input
                     id="filter"
                     type="text"
-                    value={this.state.input}
+                    value={this.state.filter}
                     onChange={this.onChange}
                     placeholder="Search..."
                     className="w-[80%] transition-all mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none focus:placeholder:text-transparent text-white focus:border-quaternary focus:rounded-2xl"

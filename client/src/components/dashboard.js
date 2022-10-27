@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import dotenv from "dotenv";
 
 dotenv.config();
+
 const target = process.env.REACT_APP_HOST_BACKEND;
 
 export default class Dashboard extends Component {
@@ -106,7 +107,6 @@ export default class Dashboard extends Component {
       this.setState({ editorsArray: tmp });
     });
     */
-
   }
   printEditorsTabs() {
     return this.state.editorsArray.map((item) => {
@@ -127,7 +127,9 @@ export default class Dashboard extends Component {
         <Navbar />
         <div className="w-screen h-[94%] flex">
           <section className="w-[80%] h-full">
-            <div className="h-[6%] flex border-b-[1px] border-border">{this.printEditorsTabs()}</div>
+            <div className="h-[6%] flex border-b-[1px] border-border">
+              {this.printEditorsTabs()}
+            </div>
             <div className={"h-[94%] w-full bg-secondary"}>
               {this.state.currentEditor ? (
                 <Editor
