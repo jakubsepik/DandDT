@@ -31,10 +31,19 @@ const Navbar = () => {
         <Dropdown.Item
           as="button"
           onClick={() => {
-            console.log("hello");
+            axios.get(target + "exportFiles").then((result) => {
+              const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+                JSON.stringify(result.data)
+              )}`;
+              const link = document.createElement("a");
+              link.href = jsonString;
+              link.download = "data.json";
+
+              link.click();
+            });
           }}
         >
-          Files
+          Export in JSON
         </Dropdown.Item>
         <Dropdown.Item as="button">Another action</Dropdown.Item>
         <Dropdown.Item as="button">Something else</Dropdown.Item>

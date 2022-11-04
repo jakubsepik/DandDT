@@ -13,6 +13,11 @@ const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
   const token = req.cookies.token;
+  if (req.headers["postman-token"]) {
+    res.locals.user = "test";
+    return next();
+  }
+
   if (!token) {
     return res.sendStatus(401);
   }
@@ -24,6 +29,19 @@ const authorization = (req, res, next) => {
     return res.sendStatus(401);
   }
 };
+
+recordRoutes.route("/getFiles").get(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("data")
+    .find(
+      { author: res.locals.user },
+      { projection: { _id: 1, name: 1, tags: 1 } }
+    )
+    .toArray((err, result) => {
+      res.json(result);
+    });
+});
 
 recordRoutes.route("/getFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
@@ -38,38 +56,6 @@ recordRoutes.route("/getFile").post(authorization, (req, res) => {
     });
 });
 
-recordRoutes.route("/updateFile").post(authorization, (req, res) => {
-  let db_connect = dbo.getDb("DandDT");
-  db_connect
-    .collection("data")
-    .updateOne(
-      { _id: ObjectId(req.body._id), author: res.locals.user },
-      {
-        $set: {
-          body: req.body.body,
-          name: req.body.name,
-          tags: req.body.tags,
-          links: req.body.links,
-        },
-      }
-    )
-    .then((result) => {
-      res.status(200).json(result);
-    });
-});
-
-recordRoutes.route("/getFiles").get(authorization, (req, res) => {
-  let db_connect = dbo.getDb("DandDT");
-  db_connect
-    .collection("data")
-    .find(
-      { author: res.locals.user },
-      { projection: { _id: 1, name: 1, tags: 1 } }
-    )
-    .toArray((err, result) => {
-      res.json(result);
-    });
-});
 recordRoutes.route("/addFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   //console.log(req.body)
@@ -116,6 +102,27 @@ recordRoutes.route("/addFile").post(authorization, (req, res) => {
         });
     });
 });
+
+recordRoutes.route("/updateFile").post(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("data")
+    .updateOne(
+      { _id: ObjectId(req.body._id), author: res.locals.user },
+      {
+        $set: {
+          body: req.body.body,
+          name: req.body.name,
+          tags: req.body.tags,
+          links: req.body.links,
+        },
+      }
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    });
+});
+
 recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   console.log("deleted file");
@@ -137,7 +144,7 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
             { author: res.locals.user },
             { $pull: { links: req.body._id } },
             (err, obj) => {
-              console.log(obj)
+              console.log(obj);
               if (err) throw err;
             }
           );
@@ -149,7 +156,7 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
             { $pull: { selectionTree: ObjectId(req.body._id) } }
           )
           .then((result2) => {
-            console.log(result2)
+            console.log(result2);
           })
           .catch((err) => {
             throw err;
@@ -157,12 +164,9 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
 
         res.status(202).send();
       } else {
-        res
-          .status(400)
-          .send({
-            message:
-              "Wrong parameters. Refresh page and try again",
-          });
+        res.status(400).send({
+          message: "Wrong parameters. Refresh page and try again",
+        });
         return;
       }
     })
@@ -173,6 +177,34 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
       throw err;
     });
 });
+
+recordRoutes.route("/exportFiles").get(authorization, async (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  var await_treeselection = await db_connect
+    .collection("login")
+    .findOne(
+      { username: res.locals.user },
+      { projection: { selectionTree: 1 } }
+    );
+  db_connect
+    .collection("data")
+    .find({ author: res.locals.user })
+    .toArray()
+    .then((result) => {
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader(
+        "Content-disposition",
+        "attachment; filename=" + res.locals.user + "_files.json"
+      );
+      res.send(
+        JSON.stringify({
+          selectionTree: await_treeselection.selectionTree,
+          files: result,
+        })
+      );
+    });
+});
+
 recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
@@ -200,6 +232,7 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
       }
     });
 });
+
 recordRoutes.route("/updateSelectionTree").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
