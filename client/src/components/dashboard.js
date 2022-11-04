@@ -125,7 +125,7 @@ export default class Dashboard extends Component {
     return (
       <div className="bg-primary h-screen ">
         <Navbar />
-        <div className="w-screen h-[94%] flex">
+        <div className="w-screen h-[92%] flex">
           <section className="w-[80%] h-full">
             <div className="h-[6%] flex border-b-[1px] border-border">
               {this.printEditorsTabs()}

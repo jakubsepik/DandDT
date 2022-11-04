@@ -10,7 +10,7 @@ const target = process.env.REACT_APP_HOST_BACKEND;
 
 const Navbar = () => {
   return (
-    <nav className="flex bg-tertiary h-[6%] items-center border-b-[1px] border-border">
+    <nav className="flex bg-tertiary h-[8%] items-center border-b-[1px] border-border">
       <div className="px-8 py-2 text-lg font-bold text-[#ec2127]">D&DT</div>
       <span id="user" className="px-8 text-white">
         <div>Welcome {window.sessionStorage.getItem("user")}</div>
