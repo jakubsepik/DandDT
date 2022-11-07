@@ -153,7 +153,7 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
           .collection("login")
           .updateOne(
             { username: res.locals.user },
-            { $pull: { selectionTree: req.body._id } }
+            { $pull: { selectionTree: ObjectId(req.body._id) } }
           )
           .then((result2) => {
             console.log(result2);
