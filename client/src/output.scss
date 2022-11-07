@@ -593,6 +593,11 @@ video {
   margin-bottom: 1.25rem !important;
 }
 
+.mx-8 {
+  margin-left: 2rem !important;
+  margin-right: 2rem !important;
+}
+
 .ml-auto {
   margin-left: auto !important;
 }
@@ -629,8 +634,8 @@ video {
   height: 100vh !important;
 }
 
-.h-\[94\%\] {
-  height: 94% !important;
+.h-\[92\%\] {
+  height: 92% !important;
 }
 
 .h-full {
@@ -641,12 +646,44 @@ video {
   height: 6% !important;
 }
 
+.h-\[94\%\] {
+  height: 94% !important;
+}
+
 .h-\[12\%\] {
   height: 12% !important;
 }
 
 .h-2\/3 {
   height: 66.666667% !important;
+}
+
+.h-\[8\%\] {
+  height: 8% !important;
+}
+
+.h-screen {
+  height: 100vh !important;
+}
+
+.h-\[9\%\] {
+  height: 9% !important;
+}
+
+.h-full {
+  height: 100% !important;
+}
+
+.h-\[6\%\] {
+  height: 6% !important;
+}
+
+.h-\[94\%\] {
+  height: 94% !important;
+}
+
+.h-\[80\%\] {
+  height: 80% !important;
 }
 
 .w-screen {
@@ -667,6 +704,18 @@ video {
 
 .w-\[10\%\] {
   width: 10% !important;
+}
+
+.w-screen {
+  width: 100vw !important;
+}
+
+.w-\[80\%\] {
+  width: 80% !important;
+}
+
+.w-full {
+  width: 100% !important;
 }
 
 .-translate-x-1\/2 {
@@ -737,6 +786,10 @@ video {
   border-right-width: 1px !important;
 }
 
+.border-b-\[1px\] {
+  border-bottom-width: 1px !important;
+}
+
 .border-solid {
   border-style: solid !important;
 }
@@ -751,6 +804,10 @@ video {
 
 .border-indigo-500 {
   border-color: #6366f1 !important;
+}
+
+.border-border {
+  border-color: #606060 !important;
 }
 
 .border-b-quaternary {
@@ -783,6 +840,18 @@ video {
 
 .bg-indigo-500 {
   background-color: #6366f1 !important;
+}
+
+.bg-primary {
+  background-color: #1c1f20 !important;
+}
+
+.bg-secondary {
+  background-color: #262a2b !important;
+}
+
+.bg-tertiary {
+  background-color: #032e4b !important;
 }
 
 .p-2 {
@@ -824,6 +893,16 @@ video {
   padding-right: 0.5rem !important;
 }
 
+.px-8 {
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
+.py-2 {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
 .pl-4 {
   padding-left: 1rem !important;
 }
@@ -854,6 +933,11 @@ video {
   line-height: 1.75rem !important;
 }
 
+.text-lg {
+  font-size: 1.125rem !important;
+  line-height: 1.75rem !important;
+}
+
 .font-semibold {
   font-weight: 600 !important;
 }
@@ -872,6 +956,14 @@ video {
 
 .text-quaternary {
   color: #0b4f7d !important;
+}
+
+.text-\[\#ec2127\] {
+  color: #ec2127 !important;
+}
+
+.text-white {
+  color: #fff !important;
 }
 
 .underline {
