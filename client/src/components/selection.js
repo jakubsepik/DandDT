@@ -32,7 +32,7 @@ class Edit extends Component {
       .then((response) => {
         this.props.closeEditor(_id);
         this.props.getFiles();
-        toast.success("File deleted")
+        toast.success("File deleted");
       });
   }
   onChange(e) {
@@ -60,7 +60,7 @@ class Edit extends Component {
       return null;
     //console.log(this.state.selectionTree);
     return this.state.selectionTree.map((element, index) => {
-      if (element.constructor === Object) {
+      if (element.constructor === Object) { 
         //console.log(element);
         return false;
         /*
@@ -76,7 +76,7 @@ class Edit extends Component {
         let item = this.state.selectionFilesArray.find(
           (x) => x._id === element
         );
-        console.log(item)
+        console.log(item);
         let normalize_filter = this.state.filter
           .normalize("NFD")
           .replace(/\p{Diacritic}/gu, "")
@@ -148,19 +148,23 @@ class Edit extends Component {
     return (
       <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
         <DragDropContext
-          onDragEnd={(result) => {
+          onDragEnd={async (result) => {
             if (!result.destination) return;
-            this.state.selectionTree.slice(
-              result.destination.index,
-              0,
-              this.state.selectionTree[result.source.index]
-            );
-            //delete this.state.selectionTree[result.source.index]
+
+            const fromIndex = result.source.index;
+            const toIndex = result.destination.index;
+            const arr = this.state.selectionTree;
+            
+            var element = arr.splice(fromIndex, 1)[0];
+            arr.splice(toIndex, 0, element);
+            
             axios
               .post(target + "updateSelectionTree", {
-                selectionTree: this.state.selectionTree,
+                selectionTree: arr,
               })
-              .then((response) => {});
+              .then((response) => {
+                this.setState({selectionTree:arr})
+              });
           }}
         >
           <Droppable droppableId="characters">
