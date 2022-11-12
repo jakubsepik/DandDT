@@ -1,4 +1,4 @@
-{
+
   "item":{
     "_id":"_id",
     "name":"name",
@@ -8,10 +8,17 @@
     "links":["link"]
 },
 "user":{
+    _id
     "email":"email",
-    "name":"name"
+    "username":"name"
+    password
+    selectionTree
 }
+
+{name
+files:[]
 }
+
 random name generator, prerobit otvaranie a focus na editory, pridat oznacenie otvorenym editorom
 
 
