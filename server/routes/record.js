@@ -178,6 +178,65 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
     });
 });
 
+recordRoutes.route("/addDirectory").post(authorization, (req, res) => {
+  if (!req.body.name) {
+    if (req.body.name == "") {
+      req.body.name = "Directory";
+    } else {
+      res
+        .status(400)
+        .json({ message: "Wrong parameters. Refresh page and try again" });
+      return;
+    }
+  }
+  let db_connect = dbo.getDb("DandDT");
+
+  var directory = { name: req.body.name, files: [] };
+
+  db_connect
+    .collection("login")
+    .updateOne(
+      { username: res.locals.user },
+      {
+        $push: {
+          selectionTree: {
+            $each: [directory],
+            $position: 0,
+          },
+        },
+      }
+    )
+    .then((result) => {
+      res.json(result);
+    });
+});
+
+recordRoutes.route("/deleteDirectory").post(authorization, (req, res) => {
+  if (!(req.body.index>=0)) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
+  let db_connect = dbo.getDb("DandDT");
+  var arr;
+  db_connect.collection("login").findOne({username: res.locals.user },{projection:{selectionTree:1}}).then(result=>{
+    arr=result.selectionTree
+    console.log(arr)
+    if(req.body.index>=arr.length || arr[req.body.index].constructor!==Object){
+      res.status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+      return;
+    }
+    arr.splice(req.body.index,1)
+    db_connect.collection("login").updateOne({username:res.locals.user},{$set:{selectionTree:arr}}).then(result2=>{
+      res.status(200).json(result2)
+    })
+  })
+
+ 
+});
+
 recordRoutes.route("/exportFiles").get(authorization, async (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   var await_treeselection = await db_connect
@@ -213,6 +272,8 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
       if (err) throw err;
       if (obj.selectionTree) res.status(200).json(obj.selectionTree);
       else {
+        //if selectionTree does not exist
+        //great for reseting
         db_connect
           .collection("data")
           .find({ author: res.locals.user }, { projection: { _id: 1 } })
