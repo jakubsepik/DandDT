@@ -191,7 +191,8 @@ recordRoutes.route("/addDirectory").post(authorization, (req, res) => {
   }
   let db_connect = dbo.getDb("DandDT");
 
-  var directory = { name: req.body.name, files: [] };
+  var directory_id = ObjectId();
+  var directory = { _id: directory_id, name: req.body.name, files: [] };
 
   db_connect
     .collection("login")
@@ -207,34 +208,27 @@ recordRoutes.route("/addDirectory").post(authorization, (req, res) => {
       }
     )
     .then((result) => {
-      res.json(result);
+      res.status(200).json(directory);
     });
 });
 
 recordRoutes.route("/deleteDirectory").post(authorization, (req, res) => {
-  if (!(req.body.index>=0)) {
+  if (!/^[0-9a-fA-F]{24}$/.test(req.body._id)) {
     res
       .status(400)
       .json({ message: "Wrong parameters. Refresh page and try again" });
     return;
   }
   let db_connect = dbo.getDb("DandDT");
-  var arr;
-  db_connect.collection("login").findOne({username: res.locals.user },{projection:{selectionTree:1}}).then(result=>{
-    arr=result.selectionTree
-    console.log(arr)
-    if(req.body.index>=arr.length || arr[req.body.index].constructor!==Object){
-      res.status(400)
-      .json({ message: "Wrong parameters. Refresh page and try again" });
-      return;
-    }
-    arr.splice(req.body.index,1)
-    db_connect.collection("login").updateOne({username:res.locals.user},{$set:{selectionTree:arr}}).then(result2=>{
-      res.status(200).json(result2)
-    })
-  })
-
- 
+  db_connect
+    .collection("login")
+    .updateOne(
+      { username: res.locals.user },
+      { $pull: { selectionTree: { _id: ObjectId(req.body._id) } } }
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    });
 });
 
 recordRoutes.route("/exportFiles").get(authorization, async (req, res) => {
@@ -280,7 +274,7 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
           .toArray((err, result) => {
             const array = [];
             result.forEach((element) => {
-              array.push(element._id);
+              array.push(element._id.toString());
             });
             db_connect
               .collection("login")

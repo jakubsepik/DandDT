@@ -8,7 +8,7 @@ const File = (props) => {
     <Draggable draggableId={props._id} index={props.index}>
     {(provided) => (
     <li
-      className="w-full text-white p-2 cursor-pointer hover:backdrop-brightness-50 flex items-center"
+      className="w-full text-white p-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
       onClick={()=>{props.renderFile(props._id)}}
       ref={provided.innerRef}
       {...provided.draggableProps}

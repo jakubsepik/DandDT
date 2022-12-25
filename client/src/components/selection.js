@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import axios from "axios";
 import dotenv from "dotenv";
 import File from "../components/file";
+import Directory from "../components/directory";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
 import toast from "react-hot-toast";
+import { Dropdown } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.css";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
 
@@ -15,6 +18,8 @@ class Edit extends Component {
     this.renderFile = this.renderFile.bind(this);
     this.createFile = this.createFile.bind(this);
     this.deleteFile = this.deleteFile.bind(this);
+    this.createDirectory = this.createDirectory.bind(this);
+    this.deleteDirectory = this.deleteDirectory.bind(this);
 
     this.onChange = this.onChange.bind(this);
     this.state = {
@@ -23,6 +28,17 @@ class Edit extends Component {
       selectionTree: [],
       create_popup: false,
     };
+  }
+  createDirectory() {
+    axios
+      .post(target + "addDirectory", { name: this.state.filter })
+      .then((response) => {
+        toast.success("Directory created");
+        this.setState({
+          selectionTree: [response.data].concat(this.state.selectionTree),
+          filter: "",
+        });
+      });
   }
   deleteFile(_id) {
     axios
@@ -33,6 +49,19 @@ class Edit extends Component {
         this.props.closeEditor(_id);
         this.props.getFiles();
         toast.success("File deleted");
+      });
+  }
+  deleteDirectory(_id) {
+    axios
+      .post(target + "deleteDirectory", {
+        _id: _id,
+      })
+      .then((response) => {
+        var arr = this.state.selectionTree.filter(function (item) {
+          return item._id !== _id;
+        });
+        this.setState({selectionTree:arr})
+        toast.success("Directory deleted");
       });
   }
   onChange(e) {
@@ -51,7 +80,6 @@ class Edit extends Component {
   renderFile(_id) {
     this.props.openEditor(0, _id);
   }
-  updateSelectionTree() {}
   printFiles() {
     if (
       !this.state.selectionFilesArray.length ||
@@ -60,18 +88,20 @@ class Edit extends Component {
       return null;
     //console.log(this.state.selectionTree);
     return this.state.selectionTree.map((element, index) => {
-      if (element.constructor === Object) { 
-        //console.log(element);
-        return false;
-        /*
+      if (element.constructor === Object) {
+        //return false;
+
+        return (
           <Directory
-            key={element.name}
+            key={element._id}
             selectionFilesArray={this.state.selectionFilesArray}
             selectionTree={element}
+            filter={this.state.filter}
             renderFile={this.renderFile}
             deleteFile={this.deleteFile}
+            deleteDirectory={this.deleteDirectory}
           />
-        );*/
+        );
       } else {
         let item = this.state.selectionFilesArray.find(
           (x) => x._id === element
@@ -148,26 +178,26 @@ class Edit extends Component {
     return (
       <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
         <DragDropContext
-          onDragEnd={async (result) => {
+          onDragEnd={(result) => {
             if (!result.destination) return;
 
             const fromIndex = result.source.index;
             const toIndex = result.destination.index;
             const arr = this.state.selectionTree;
-            
+
             var element = arr.splice(fromIndex, 1)[0];
             arr.splice(toIndex, 0, element);
-            
+
             axios
               .post(target + "updateSelectionTree", {
                 selectionTree: arr,
               })
               .then((response) => {
-                this.setState({selectionTree:arr})
+                this.setState({ selectionTree: arr });
               });
           }}
         >
-          <Droppable droppableId="characters">
+          <Droppable droppableId="Selection">
             {(provided) => (
               <ul
                 className="w-full h-full overflow-x-hidden"
@@ -186,12 +216,24 @@ class Edit extends Component {
                     placeholder="Search..."
                     className="w-[80%] transition-all mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none focus:placeholder:text-transparent text-white focus:border-quaternary focus:rounded-2xl"
                   />
-                  <div
-                    className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl"
-                    onClick={this.createFile}
-                  >
-                    <AiFillPlusCircle />
-                  </div>
+
+                  <Dropdown>
+                    <div className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl">
+                      <Dropdown.Toggle as={CustomToggle}>
+                        <AiFillPlusCircle />
+                      </Dropdown.Toggle>
+                    </div>
+                    <Dropdown.Menu>
+                      <Dropdown.Item>
+                        <div onClick={this.createFile}>Create File</div>
+                      </Dropdown.Item>
+                      <Dropdown.Item>
+                        <div onClick={this.createDirectory}>
+                          Create Directory
+                        </div>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </li>
                 {this.printFiles()}
                 {provided.placeholder}
@@ -204,5 +246,17 @@ class Edit extends Component {
     );
   }
 }
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <a
+    href=""
+    ref={ref}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+  >
+    {children}
+  </a>
+));
 
 export default Edit;
