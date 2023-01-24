@@ -132,6 +132,7 @@ build/
 
 # Test folders/files
 htmlbuild/
+/client/src/components/test.js
 
 # Documentation
 *.pptx
