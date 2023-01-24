@@ -127,10 +127,14 @@ dist
 # Serverless Webpack directories
 .webpack/
 
-#build folder
+# Build folder
 build/
 
-#htmlbuild test folder
+# Test folders/files
 htmlbuild/
+
+# Documentation
+*.pptx
+*docx
 
 # End of https://www.toptal.com/developers/gitignore/api/node
