@@ -6,18 +6,19 @@ var deleteConfirm = null;
 const File = (props) => {
   return (
     <Draggable draggableId={props._id} index={props.index}>
-    {(provided) => (
+    {(provided,snapshot) => {
+      return(
     <li
-      className="w-full text-white p-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
+      className="rounded bg-primary text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
       onClick={()=>{props.renderFile(props._id)}}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
       <span>{props.file.name}</span>
-      <span className="ml-4 tags overflow-hidden">{props.tags}</span>
+      <span className="tags">{props.tags}</span>
       <span
-        className="ml-auto hover:text-red-600"
+        className="hover:text-red-600"
         onClick={(e) => {
           e.stopPropagation();
           var date = new Date();
@@ -35,7 +36,7 @@ const File = (props) => {
       ><AiFillDelete/>
       </span>
     </li>
-    )}
+    )}}
     </Draggable>
   );
 };

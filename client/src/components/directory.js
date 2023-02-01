@@ -6,6 +6,7 @@ import { GoFileDirectory } from "react-icons/go";
 import { AiFillDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 var deleteConfirm = null;
 
@@ -38,11 +39,6 @@ function Collapse({ isActive }) {
   );
 }
 
-
-
-
-
-
 function Directory(props) {
   const [isExpanded, setExpanded] = useState(false);
   const { getToggleProps, getCollapseProps } = useCollapse({
@@ -59,6 +55,7 @@ function Directory(props) {
     }
     return selectionTree.files.map((element, index) => {
       if (element.constructor === Object) {
+        return null;
         return (
           <Directory
             key={element._id}
@@ -72,7 +69,6 @@ function Directory(props) {
         );
       } else {
         let item = props.selectionFilesArray.find((x) => x._id === element);
-        console.log(item);
         let normalize_filter = props.filter
           .normalize("NFD")
           .replace(/\p{Diacritic}/gu, "")
@@ -114,6 +110,7 @@ function Directory(props) {
             );
           });
         }
+
         return (
           <File
             file={item}
@@ -129,45 +126,63 @@ function Directory(props) {
     });
   };
   return (
-    <li className="">
-      <div
-        className="flex items-center h-10 p-2"
-        {...getToggleProps({
-          style: { color: "white" },
-          onClick: () => setExpanded((x) => !x),
-        })}
-      >
-        <span className="pr-2">
-          <GoFileDirectory />
-        </span>
-        {selectionTree.name}
-        <span className="ml-auto text-white">
-          {isExpanded ? <FcCollapse /> : <FcExpand />}
-        </span>
-        <span
-          className="pl-3 hover:text-red-600"
-          onClick={(e) => {
-            e.stopPropagation();
-            var date = new Date();
-            if (
-              deleteConfirm &&
-              date.getTime() - deleteConfirm.getTime() < 4000
-            ) {
-              props.deleteDirectory(selectionTree._id);
-              deleteConfirm = null; 
-            } else {
-              toast("Click again for removal of file");
-              deleteConfirm = date;
-            }
-          }}
+    <Draggable draggableId={selectionTree._id} index={props.index}>
+      {(providedDraggable) => (
+        <li
+          ref={providedDraggable.innerRef}
+          {...providedDraggable.draggableProps}
+          {...providedDraggable.dragHandleProps}
         >
-          <AiFillDelete/>
-        </span>
-      </div>
-      <ul {...getCollapseProps()} className="pl-5">
-        {printFiles()}
-      </ul>
-    </li>
+          <div
+            className="flex items-center h-10 p-2"
+            {...getToggleProps({
+              style: { color: "white" },
+              onClick: () => setExpanded((x) => !x),
+            })}
+          >
+            <span className="pr-2">
+              <GoFileDirectory />
+            </span>
+            {selectionTree.name}
+            <span className="ml-auto text-white">
+              {isExpanded ? <FcCollapse /> : <FcExpand />}
+            </span>
+            <span
+              className="pl-3 hover:text-red-600"
+              onClick={(e) => {
+                e.stopPropagation();
+                var date = new Date();
+                if (
+                  deleteConfirm &&
+                  date.getTime() - deleteConfirm.getTime() < 4000
+                ) {
+                  props.deleteDirectory(selectionTree._id);
+                  deleteConfirm = null;
+                } else {
+                  toast("Click again for removal of file");
+                  deleteConfirm = date;
+                }
+              }}
+            >
+              <AiFillDelete />
+            </span>
+          </div>
+          <Droppable droppableId={selectionTree._id} type="directory">
+            {(provided) => (
+              <ul
+                {...getCollapseProps()}
+                className="pl-5"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {printFiles()}
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
+        </li>
+      )}
+    </Draggable>
   );
 }
 

@@ -60,7 +60,7 @@ class Edit extends Component {
         var arr = this.state.selectionTree.filter(function (item) {
           return item._id !== _id;
         });
-        this.setState({selectionTree:arr})
+        this.setState({ selectionTree: arr });
         toast.success("Directory deleted");
       });
   }
@@ -86,27 +86,29 @@ class Edit extends Component {
       this.state.selectionFilesArray.length === 0
     )
       return null;
-    //console.log(this.state.selectionTree);
+
     return this.state.selectionTree.map((element, index) => {
       if (element.constructor === Object) {
         //return false;
 
         return (
-          <Directory
-            key={element._id}
-            selectionFilesArray={this.state.selectionFilesArray}
-            selectionTree={element}
-            filter={this.state.filter}
-            renderFile={this.renderFile}
-            deleteFile={this.deleteFile}
-            deleteDirectory={this.deleteDirectory}
-          />
+          <>
+            <Directory
+              key={element._id}
+              selectionFilesArray={this.state.selectionFilesArray}
+              selectionTree={element}
+              filter={this.state.filter}
+              renderFile={this.renderFile}
+              deleteFile={this.deleteFile}
+              deleteDirectory={this.deleteDirectory}
+              index={index}
+            />
+          </>
         );
       } else {
         let item = this.state.selectionFilesArray.find(
           (x) => x._id === element
         );
-        console.log(item);
         let normalize_filter = this.state.filter
           .normalize("NFD")
           .replace(/\p{Diacritic}/gu, "")
@@ -148,6 +150,7 @@ class Edit extends Component {
             );
           });
         }
+
         return (
           <File
             file={item}
@@ -175,18 +178,57 @@ class Edit extends Component {
     });
   }
   render() {
+    console.log(this.state.selectionTree);
     return (
       <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
         <DragDropContext
+          onDragStart={(result) => {}}
           onDragEnd={(result) => {
-            if (!result.destination) return;
+            console.log(result);
 
-            const fromIndex = result.source.index;
-            const toIndex = result.destination.index;
             const arr = this.state.selectionTree;
 
-            var element = arr.splice(fromIndex, 1)[0];
-            arr.splice(toIndex, 0, element);
+            const { destination, source } = result;
+            const fromIndex = source.index;
+            const toIndex = destination?.index;
+            const isDraggableDirectory = arr.some(
+              (x) => x._id === result.draggableId
+            );
+
+            if (result.combine) {
+              if (isDraggableDirectory) return;
+              var directory = arr.find(
+                (x) => x._id === result.combine.draggableId
+              );
+              if (!directory) return;
+              var element = arr.splice(fromIndex, 1)[0];
+              directory.files.push(element);
+            } else {
+              if (result.type === "directory") {
+                var directory_index_from = arr.findIndex(
+                  (x) => x._id === source.droppableId
+                );
+                
+                
+                var element = arr[directory_index_from].files.splice(fromIndex, 1)[0];
+
+                if (!toIndex) {
+                  arr.splice(directory_index_from, 0, element);
+                }else{
+                  var directory_index_to = arr.findIndex(
+                    (x) => x._id === destination.droppableId
+                  );
+                  arr[directory_index_to].files.splice(toIndex, 0, element);
+                }
+
+                
+              } else {
+                if (!destination || fromIndex === toIndex) return;
+                var element = arr.splice(fromIndex, 1)[0];
+
+                arr.splice(toIndex, 0, element);
+              }
+            }
 
             axios
               .post(target + "updateSelectionTree", {
@@ -195,9 +237,29 @@ class Edit extends Component {
               .then((response) => {
                 this.setState({ selectionTree: arr });
               });
+
+            //pouzi coombine, pretiahnut veci na folder a bude prvy prvok
+
+            
+            return;
+            if (source.droppableId === "Selection") {
+              var element = arr.splice(fromIndex, 1)[0];
+            } else {
+              var element = arr
+                .find((x) => x._id === source.droppableId)
+                .files.splice(fromIndex, 0)[0];
+            }
+
+            if (destination.droppableId === "Selection") {
+              arr.splice(toIndex, 0, element);
+            } else {
+              arr
+                .find((x) => x._id === destination.droppableId)
+                .files.splice(toIndex, 0, element);
+            }
           }}
         >
-          <Droppable droppableId="Selection">
+          <Droppable droppableId="Selection" isCombineEnabled>
             {(provided) => (
               <ul
                 className="w-full h-full overflow-x-hidden"
