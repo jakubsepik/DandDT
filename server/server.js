@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -8,8 +9,10 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: process.env.FRONTEND_IP, credentials: true }));
 app.use(express.json());
 
-app.use("/user", require("../server/routes/user"));
-app.use("/", require("../server/routes/record"));
+
+app.use(express.static(path.join(__dirname,"..","client","build")));
+app.use("/api/user", require("../server/routes/user"));
+app.use("/api", require("../server/routes/record"));
 
 const dbo = require("../server/db/conn.js");
 
