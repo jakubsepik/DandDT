@@ -57,10 +57,7 @@ class Edit extends Component {
         _id: _id,
       })
       .then((response) => {
-        var arr = this.state.selectionTree.filter(function (item) {
-          return item._id !== _id;
-        });
-        this.setState({ selectionTree: arr });
+        this.setState({selectionTree:response.data.newSelectionTree})
         toast.success("Directory deleted");
       });
   }

@@ -9,6 +9,7 @@ require("dotenv").config();
 //connection to database
 const dbo = require("../db/conn");
 
+//web token for authentication
 const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
@@ -222,12 +223,24 @@ recordRoutes.route("/deleteDirectory").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("login")
-    .updateOne(
-      { username: res.locals.user },
-      { $pull: { selectionTree: { _id: ObjectId(req.body._id) } } }
-    )
+    .findOne({ username: res.locals.user })
     .then((result) => {
-      res.status(200).json(result);
+      var directory_index = result.selectionTree.findIndex(
+        (x) => x._id === req.body._id
+      );
+      if (directory_index===-1)
+        res
+          .status(400)
+          .json({ message: "Wrong parameters. Refresh page and try again" });
+      var files = result.selectionTree[directory_index].files;
+      result.selectionTree.splice(directory_index, 1, ...files);
+
+      db_connect.collection("login").updateOne({ username: res.locals.user },
+        { $set: { selectionTree: result.selectionTree } }).then((result2)=>{
+          result2.newSelectionTree=result.selectionTree;
+          res.status(200).json(result2);
+        })
+      
     });
 });
 
@@ -264,6 +277,7 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
     .collection("login")
     .findOne({ username: res.locals.user }, function (err, obj) {
       if (err) throw err;
+      console.log(obj.selectionTree);
       if (obj.selectionTree) res.status(200).json(obj.selectionTree);
       else {
         //if selectionTree does not exist
