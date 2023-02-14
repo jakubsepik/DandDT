@@ -159,6 +159,7 @@ class Edit extends Component {
             renderFile={this.renderFile}
             deleteFile={this.deleteFile}
             _id={item._id}
+            isDragDisabled={this.state.filter!==""}
             index={index}
           />
         );
@@ -259,7 +260,7 @@ class Edit extends Component {
             }
           }}
         >
-          <Droppable droppableId="Selection" isCombineEnabled>
+          <Droppable droppableId="Selection" isCombineEnabled isDropDisabled={this.state.filter!==""}>
             {(provided) => (
               <ul
                 className="w-full h-full overflow-x-hidden"

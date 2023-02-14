@@ -5,7 +5,7 @@ var deleteConfirm = null;
 
 const File = (props) => {
   return (
-    <Draggable draggableId={props._id} index={props.index}>
+    <Draggable draggableId={props._id} index={props.index} isDragDisabled={props.isDragDisabled}>
     {(provided,snapshot) => {
       return(
     <li
@@ -29,7 +29,7 @@ const File = (props) => {
             props.deleteFile(props._id);
             deleteConfirm = null;
           } else {
-            toast("Click again for removal of file");
+            toast("Click again to remove file");
             deleteConfirm = date;
           }
         }}

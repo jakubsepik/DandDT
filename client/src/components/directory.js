@@ -159,7 +159,7 @@ function Directory(props) {
                   props.deleteDirectory(selectionTree._id);
                   deleteConfirm = null;
                 } else {
-                  toast("Click again for removal of file");
+                  toast("Click again to delete directory");
                   deleteConfirm = date;
                 }
               }}
