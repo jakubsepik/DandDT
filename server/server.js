@@ -10,11 +10,11 @@ app.use(cors({ origin: process.env.FRONTEND_IP, credentials: true }));
 app.use(express.json());
 
 
-app.use(express.static(path.join("..","server","build")));
-app.use("/api/user", require("../server/routes/user"));
-app.use("/api", require("../server/routes/record"));
+app.use(express.static(path.join("./","build")));
+app.use("/api/user", require("./routes/user"));
+app.use("/api", require("./routes/record"));
 
-const dbo = require("../server/db/conn.js");
+const dbo = require("./db/conn");
 
 app.listen(port, () => {
   dbo.connectToServer(function (err) {
