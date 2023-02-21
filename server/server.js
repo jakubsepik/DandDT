@@ -10,7 +10,7 @@ app.use(cors({ origin: process.env.FRONTEND_IP, credentials: true }));
 app.use(express.json());
 
 
-app.use(express.static(path.join(__dirname,"..","client","build")));
+app.use(express.static(path.join("..","server","build")));
 app.use("/api/user", require("../server/routes/user"));
 app.use("/api", require("../server/routes/record"));
 
