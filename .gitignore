@@ -130,13 +130,13 @@ dist
 # Build folder
 build/
 
-# Test folders/files
+# Test folders & files
 htmlbuild/
 /client/src/components/test.js
 
 # Documentation
 *.pptx
-*docx
+*.docx
 
 # Zip of production
 server.zip

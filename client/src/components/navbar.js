@@ -1,5 +1,6 @@
 import React from "react";
 import { FaSignOutAlt } from "react-icons/fa";
+import {IoMdSettings} from "react-icons/io"
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
@@ -27,7 +28,7 @@ const Navbar = () => {
       >
         <FaSignOutAlt />
       </span>
-      <DropdownButton id="dropdown-item-button" title="Tools">
+      <DropdownButton id="dropdown-item-button" title={<span className="inline-block"><IoMdSettings/></span>}>
         <Dropdown.Item
           as="button"
           onClick={() => {

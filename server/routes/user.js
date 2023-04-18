@@ -14,8 +14,8 @@ const dbo = require("../db/conn");
 
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-//verify token
 
+//verify token
 recordRoutes.route("/verify").get((req, res) => {
   console.log("verify");
   if (!req.cookies.token) {
