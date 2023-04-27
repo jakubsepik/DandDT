@@ -28,7 +28,7 @@ const Navbar = () => {
       >
         <FaSignOutAlt />
       </span>
-      <DropdownButton id="dropdown-item-button" title={<span className="inline-block"><IoMdSettings/></span>}>
+      <DropdownButton title={<span className="inline-block"><IoMdSettings/></span>}>
         <Dropdown.Item
           as="button"
           onClick={() => {
@@ -46,8 +46,6 @@ const Navbar = () => {
         >
           Export in JSON
         </Dropdown.Item>
-        <Dropdown.Item as="button">Another action</Dropdown.Item>
-        <Dropdown.Item as="button">Something else</Dropdown.Item>
       </DropdownButton>
     </nav>
   );
