@@ -5,6 +5,7 @@ import File from "../components/file";
 import Directory from "../components/directory";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
+import {MdClear} from "react-icons/md"
 import toast from "react-hot-toast";
 import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
@@ -264,19 +265,23 @@ class Edit extends Component {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <li className="flex items-center py-2 px-1">
+                <li className="flex items-center py-2 px-1 relative">
                   <div className="text-quaternary text-xl w-[10%]">
                     <AiOutlineSearch />
                   </div>
+                  
                   <input
                     id="filter"
                     type="text"
                     value={this.state.filter}
                     onChange={this.onChange}
                     placeholder="Search..."
-                    className="w-[80%] transition-all mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none focus:placeholder:text-transparent text-white focus:border-quaternary focus:rounded-2xl"
+                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none text-white"
                   />
-
+                  {this.state.filter?(<span className="text-quaternary absolute right-[15%] cursor-pointer" onClick={(e)=>{
+                    e.stopPropagation()
+                    this.setState({filter:""})}}><MdClear/></span>):null}
+                  
                   <Dropdown>
                     <div className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl">
                       <Dropdown.Toggle as={CustomToggle}>
