@@ -48,14 +48,15 @@ function Directory(props) {
     props.selectionFilesArray
   );
   const [selectionTree, setSelectionTree] = useState(props.selectionTree);
-
+  const normalize_filter = props.filter
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim();
   const printFiles = () => {
-    if (selectionTree.files.length === 0) {
-      return <li className="text-gray-600">Empty</li>;
-    }
     return selectionTree.files.map((element, index) => {
       if (element.constructor === Object) {
-        return null;
+        return;
         return (
           <Directory
             key={element._id}
@@ -69,13 +70,8 @@ function Directory(props) {
         );
       } else {
         let item = props.selectionFilesArray.find((x) => x._id === element);
-        let normalize_filter = props.filter
-          .normalize("NFD")
-          .replace(/\p{Diacritic}/gu, "")
-          .toLowerCase()
-          .trim();
         if (!item) {
-          return false;
+          return;
         }
         if (
           !(
@@ -93,12 +89,13 @@ function Directory(props) {
                   .toLowerCase()
                   .trim()
                   .includes(normalize_filter)
-              )
+              ) {
                 return true;
+              }
             })
           )
         )
-          return null;
+          return;
         let tags = [];
         if (item.hasOwnProperty("tags")) {
           item.tags.sort();
@@ -125,65 +122,82 @@ function Directory(props) {
       }
     });
   };
-  return (
-    <Draggable draggableId={selectionTree._id} index={props.index}>
-      {(providedDraggable) => (
-        <li
-          ref={providedDraggable.innerRef}
-          {...providedDraggable.draggableProps}
-          {...providedDraggable.dragHandleProps}
-        >
-          <div
-            className="flex items-center h-10 p-2"
-            {...getToggleProps({
-              style: { color: "white" },
-              onClick: () => setExpanded((x) => !x),
-            })}
+  var files = printFiles();
+  if (
+    props.filter &&
+    !files.some((x) => x != null) &&
+    !selectionTree.name
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()
+      .trim()
+      .includes(normalize_filter)
+  )
+    return <></>;
+  else
+    return (
+      <Draggable draggableId={selectionTree._id} index={props.index}>
+        {(providedDraggable) => (
+          <li
+            ref={providedDraggable.innerRef}
+            {...providedDraggable.draggableProps}
+            {...providedDraggable.dragHandleProps}
           >
-            <span className="pr-2">
-              <GoFileDirectory />
-            </span>
-            {selectionTree.name}
-            <span className="ml-auto text-white">
-              {isExpanded ? <FcCollapse /> : <FcExpand />}
-            </span>
-            <span
-              className="pl-3 hover:text-red-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                var date = new Date();
-                if (
-                  deleteConfirm &&
-                  date.getTime() - deleteConfirm.getTime() < 4000
-                ) {
-                  props.deleteDirectory(selectionTree._id);
-                  deleteConfirm = null;
-                } else {
-                  toast("Click again to delete directory");
-                  deleteConfirm = date;
-                }
-              }}
+            <div
+              className="flex items-center h-10 p-2"
+              {...getToggleProps({
+                style: { color: "white" },
+                onClick: () => setExpanded((x) => !x),
+              })}
             >
-              <AiFillDelete />
-            </span>
-          </div>
-          <Droppable droppableId={selectionTree._id} type="directory">
-            {(provided) => (
-              <ul
-                {...getCollapseProps()}
-                className="pl-5"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
+              <span className="pr-2">
+                <GoFileDirectory />
+              </span>
+              {selectionTree.name}
+              <span className="ml-auto text-white">
+                {isExpanded ? <FcCollapse /> : <FcExpand />}
+              </span>
+              <span
+                className="pl-3 hover:text-red-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  var date = new Date();
+                  if (
+                    deleteConfirm &&
+                    date.getTime() - deleteConfirm.getTime() < 4000
+                  ) {
+                    props.deleteDirectory(selectionTree._id);
+                    deleteConfirm = null;
+                  } else {
+                    toast("Click again to delete directory");
+                    deleteConfirm = date;
+                  }
+                }}
               >
-                {printFiles()}
-                {provided.placeholder}
-              </ul>
-            )}
-          </Droppable>
-        </li>
-      )}
-    </Draggable>
-  );
+                <AiFillDelete />
+              </span>
+            </div>
+            <Droppable droppableId={selectionTree._id} type="directory">
+              {(provided) => (
+                <ul
+                  {...getCollapseProps()}
+                  className="pl-5"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {files.some((x) => x != null) ? (
+                    files
+                  ) : (
+                    <li className="text-gray-600">Empty</li>
+                  )}
+                  {provided.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </li>
+        )}
+      </Draggable>
+    );
 }
 
 export default Directory;

@@ -5,7 +5,7 @@ import File from "../components/file";
 import Directory from "../components/directory";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
-import {MdClear} from "react-icons/md"
+import { MdClear } from "react-icons/md";
 import toast from "react-hot-toast";
 import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
@@ -58,7 +58,7 @@ class Edit extends Component {
         _id: _id,
       })
       .then((response) => {
-        this.setState({selectionTree:response.data.newSelectionTree})
+        this.setState({ selectionTree: response.data.newSelectionTree });
         toast.success("Directory deleted");
       });
   }
@@ -87,8 +87,6 @@ class Edit extends Component {
 
     return this.state.selectionTree.map((element, index) => {
       if (element.constructor === Object) {
-        //return false;
-
         return (
           <>
             <Directory
@@ -157,7 +155,7 @@ class Edit extends Component {
             renderFile={this.renderFile}
             deleteFile={this.deleteFile}
             _id={item._id}
-            isDragDisabled={this.state.filter!==""}
+            isDragDisabled={this.state.filter !== ""}
             index={index}
           />
         );
@@ -177,7 +175,7 @@ class Edit extends Component {
     });
   }
   render() {
-    console.log(this.state.selectionTree);
+    //console.log(this.state.selectionTree);
     return (
       <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
         <DragDropContext
@@ -207,20 +205,20 @@ class Edit extends Component {
                 var directory_index_from = arr.findIndex(
                   (x) => x._id === source.droppableId
                 );
-                
-                
-                var element = arr[directory_index_from].files.splice(fromIndex, 1)[0];
+
+                var element = arr[directory_index_from].files.splice(
+                  fromIndex,
+                  1
+                )[0];
 
                 if (!toIndex) {
                   arr.splice(directory_index_from, 0, element);
-                }else{
+                } else {
                   var directory_index_to = arr.findIndex(
                     (x) => x._id === destination.droppableId
                   );
                   arr[directory_index_to].files.splice(toIndex, 0, element);
                 }
-
-                
               } else {
                 if (!destination || fromIndex === toIndex) return;
                 var element = arr.splice(fromIndex, 1)[0];
@@ -239,7 +237,6 @@ class Edit extends Component {
 
             //pouzi coombine, pretiahnut veci na folder a bude prvy prvok
 
-            
             return;
             if (source.droppableId === "Selection") {
               var element = arr.splice(fromIndex, 1)[0];
@@ -258,7 +255,11 @@ class Edit extends Component {
             }
           }}
         >
-          <Droppable droppableId="Selection" isCombineEnabled isDropDisabled={this.state.filter!==""}>
+          <Droppable
+            droppableId="Selection"
+            isCombineEnabled
+            isDropDisabled={this.state.filter !== ""}
+          >
             {(provided) => (
               <ul
                 className="w-full h-full overflow-x-hidden"
@@ -269,7 +270,7 @@ class Edit extends Component {
                   <div className="text-quaternary text-xl w-[10%]">
                     <AiOutlineSearch />
                   </div>
-                  
+
                   <input
                     id="filter"
                     type="text"
@@ -278,10 +279,18 @@ class Edit extends Component {
                     placeholder="Search..."
                     className="w-[80%] mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none text-white"
                   />
-                  {this.state.filter?(<span className="text-quaternary absolute right-[15%] cursor-pointer" onClick={(e)=>{
-                    e.stopPropagation()
-                    this.setState({filter:""})}}><MdClear/></span>):null}
-                  
+                  {this.state.filter ? (
+                    <span
+                      className="text-quaternary absolute right-[15%] cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        this.setState({ filter: "" });
+                      }}
+                    >
+                      <MdClear />
+                    </span>
+                  ) : null}
+
                   <Dropdown>
                     <div className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl">
                       <Dropdown.Toggle as={CustomToggle}>
