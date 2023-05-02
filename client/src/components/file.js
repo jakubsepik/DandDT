@@ -9,14 +9,14 @@ const File = (props) => {
     {(provided,snapshot) => {
       return(
     <li
-      className="rounded bg-primary text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
+      className="whitespace-nowrap overflow-hidden rounded bg-primary text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
       onClick={()=>{props.renderFile(props._id)}}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
-      <span>{props.file.name}</span>
-      <span className="tags">{props.tags}</span>
+      <span className="max-w-[50%] overflow-hidden text-ellipsis">{props.file.name}</span>
+      <span className="tags max-w-[45%] overflow-hidden">{props.tags}</span>
       <span
         className="hover:text-red-600"
         onClick={(e) => {

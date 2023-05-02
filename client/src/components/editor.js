@@ -199,7 +199,7 @@ class Edit extends Component {
         <div className="flex h-[12%] items-center">
           <div className="text-white font-['Georgia'] font-semibold text-lg px-4">
             {this.state.edit ? (
-              <input
+              <input 
                 className="bg-transparent border-b-[1px] border-b-quaternary outline-none text-white"
                 value={this.state.name}
                 onChange={this.onChange}
@@ -219,7 +219,7 @@ class Edit extends Component {
           id="body"
           value={this.state.body}
           onChange={this.onChange}
-          className="text-white h-2/3 w-full block bg-transparent backdrop-brightness-125 resize-none rounded"
+          className="text-white h-2/3 w-full block bg-transparent backdrop-brightness-125 resize-none rounded p-1"
         />
         <div className="mt-6">{this.printLinks()}</div>
       </span>
