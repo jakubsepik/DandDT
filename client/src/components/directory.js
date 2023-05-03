@@ -1,53 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useCollapse from "react-collapsed";
 import File from "../components/file";
 import { FcCollapse, FcExpand } from "react-icons/fc";
 import { GoFileDirectory } from "react-icons/go";
 import { AiFillDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
 var deleteConfirm = null;
-
-function Collapse({ isActive }) {
-  const [isExpanded, setExpanded] = React.useState(isActive);
-  const { getToggleProps, getCollapseProps } = useCollapse({
-    isExpanded,
-  });
-
-  React.useEffect(() => {
-    setExpanded(isActive);
-  }, [isActive, setExpanded]);
-
-  return (
-    <>
-      <button
-        {...getToggleProps({
-          style: { display: "block" },
-          onClick: () => setExpanded((x) => !x),
-        })}
-      >
-        {isActive ? "Collapse" : "Expand"}
-      </button>
-      <div {...getCollapseProps({ style: { backgroundColor: "lightblue" } })}>
-        <h2 style={{ margin: 0, padding: 10 }}>
-          Start editing to see some magic happen!
-        </h2>
-      </div>
-    </>
-  );
-}
 
 function Directory(props) {
   const [isExpanded, setExpanded] = useState(false);
   const { getToggleProps, getCollapseProps } = useCollapse({
     isExpanded,
   });
-  const [selectionFilesArray, setSelectionFilesArray] = useState(
-    props.selectionFilesArray
-  );
-  const [selectionTree, setSelectionTree] = useState(props.selectionTree);
+
+  const [selectionTree] = useState(props.selectionTree);
   const normalize_filter = props.filter
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
@@ -56,8 +24,8 @@ function Directory(props) {
   const printFiles = () => {
     return selectionTree.files.map((element, index) => {
       if (element.constructor === Object) {
-        return;
-        return (
+        return null;
+        /*return (
           <Directory
             key={element._id}
             selectionFilesArray={props.selectionFilesArray}
@@ -67,11 +35,11 @@ function Directory(props) {
             deleteFile={props.deleteFile}
             deleteDirectory={props.deleteDirectory}
           />
-        );
+        );*/
       } else {
         let item = props.selectionFilesArray.find((x) => x._id === element);
         if (!item) {
-          return;
+          return null;
         }
         if (
           !(
@@ -92,10 +60,11 @@ function Directory(props) {
               ) {
                 return true;
               }
+              return false;
             })
           )
         )
-          return;
+          return null;
         let tags = [];
         if (item.hasOwnProperty("tags")) {
           item.tags.sort();
@@ -146,7 +115,7 @@ function Directory(props) {
             <div
               className="flex items-center h-10 p-2"
               {...getToggleProps({
-                style: { color: "white" },
+                style: { color: "black" },
                 onClick: () => setExpanded((x) => !x),
               })}
             >
@@ -154,7 +123,7 @@ function Directory(props) {
                 <GoFileDirectory />
               </span>
               {selectionTree.name}
-              <span className="ml-auto text-white">
+              <span className="ml-auto text-black">
                 {isExpanded ? <FcCollapse /> : <FcExpand />}
               </span>
               <span

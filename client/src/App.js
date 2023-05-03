@@ -84,8 +84,7 @@ export default class App extends Component {
   }
   Register() {
     return (
-      <div className="h-screen bg-gradient relative">
-        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+      <>
           <h2 className="text-center login-title custom-font my-5">
             Create account
           </h2>
@@ -157,15 +156,13 @@ export default class App extends Component {
               .
             </div>
           </form>
-        </div>
-      </div>
+       </>
     );
   }
 
   Login() {
     return (
-      <div className="h-screen bg-gradient relative">
-        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+      <>
           <h2 className="text-center login-title custom-font my-5">Sign in</h2>
           <form onSubmit={this.onLogin}>
             <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
@@ -216,15 +213,15 @@ export default class App extends Component {
               </span>
               .
             </div>
-          </form>
-        </div>
-      </div>
+          </form></>
     );
   }
   render() {
     return (
       <>
         <Toaster />
+        <div className="h-screen bg-gradient relative">
+        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
         <Route exact path="/">
           {() => {
             switch (this.state.interface) {
@@ -239,6 +236,8 @@ export default class App extends Component {
             }
           }}
         </Route>
+        </div>
+        </div>
       </>
     );
   }

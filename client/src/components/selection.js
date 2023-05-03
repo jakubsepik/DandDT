@@ -3,7 +3,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import File from "../components/file";
 import Directory from "../components/directory";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { MdClear } from "react-icons/md";
 import toast from "react-hot-toast";
@@ -131,6 +131,7 @@ class Edit extends Component {
                   .includes(normalize_filter)
               )
                 return true;
+              return false;
             })
           )
         )
@@ -198,8 +199,7 @@ class Edit extends Component {
                 (x) => x._id === result.combine.draggableId
               );
               if (!directory) return;
-              var element = arr.splice(fromIndex, 1)[0];
-              directory.files.push(element);
+              directory.files.push(arr.splice(fromIndex, 1)[0]);
             } else {
               if (result.type === "directory") {
                 var directory_index_from = arr.findIndex(
@@ -221,9 +221,7 @@ class Edit extends Component {
                 }
               } else {
                 if (!destination || fromIndex === toIndex) return;
-                var element = arr.splice(fromIndex, 1)[0];
-
-                arr.splice(toIndex, 0, element);
+                arr.splice(toIndex, 0, arr.splice(fromIndex, 1)[0]);
               }
             }
 
@@ -238,7 +236,7 @@ class Edit extends Component {
             //pouzi coombine, pretiahnut veci na folder a bude prvy prvok
 
             return;
-            if (source.droppableId === "Selection") {
+            /*if (source.droppableId === "Selection") {
               var element = arr.splice(fromIndex, 1)[0];
             } else {
               var element = arr
@@ -252,7 +250,7 @@ class Edit extends Component {
               arr
                 .find((x) => x._id === destination.droppableId)
                 .files.splice(toIndex, 0, element);
-            }
+            }*/
           }}
         >
           <Droppable
@@ -277,7 +275,7 @@ class Edit extends Component {
                     value={this.state.filter}
                     onChange={this.onChange}
                     placeholder="Search..."
-                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-[1px] border-primary border-b-quaternary outline-none text-white"
+                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-b-[1px] border-b-quaternary outline-none text-black"
                   />
                   {this.state.filter ? (
                     <span
@@ -322,7 +320,7 @@ class Edit extends Component {
 }
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a
-    href=""
+    href="#"
     ref={ref}
     onClick={(e) => {
       e.preventDefault();

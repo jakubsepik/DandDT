@@ -5,7 +5,6 @@ import Editor from "../components/editor";
 import Selection from "../components/selection";
 import Tab from "../components/tab";
 //import DraftEditor from "../components/draftEditor"
-import toast from "react-hot-toast";
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -9,7 +9,7 @@ const File = (props) => {
     {(provided,snapshot) => {
       return(
     <li
-      className="whitespace-nowrap overflow-hidden rounded bg-primary text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
+      className="whitespace-nowrap overflow-hidden rounded bg-primary text-black justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
       onClick={()=>{props.renderFile(props._id)}}
       ref={provided.innerRef}
       {...provided.draggableProps}
