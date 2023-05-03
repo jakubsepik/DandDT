@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "set \"REACT_APP_HOST_BACKEND=http://dndt.games/api/\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "tailwind": "npx tailwindcss -i ./src/input.scss -o ./src/output.scss --watch"
