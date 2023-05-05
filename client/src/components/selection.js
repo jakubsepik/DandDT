@@ -319,8 +319,7 @@ class Edit extends Component {
   }
 }
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <a
-    href="#"
+  <span
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
@@ -328,7 +327,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     }}
   >
     {children}
-  </a>
+  </span>
 ));
 
 export default Edit;
