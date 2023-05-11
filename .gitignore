@@ -137,6 +137,7 @@ htmlbuild/
 # Documentation
 *.pptx
 *.docx
+*.pdf
 
 # Zip of production
 server.zip
