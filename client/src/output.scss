@@ -557,6 +557,10 @@ video {
   position: relative !important;
 }
 
+.left-\[-100\%\] {
+  left: -100% !important;
+}
+
 .right-\[15\%\] {
   right: 15% !important;
 }
@@ -565,12 +569,20 @@ video {
   right: 1px !important;
 }
 
+.bottom-0 {
+  bottom: 0px !important;
+}
+
 .top-1\/2 {
   top: 50% !important;
 }
 
 .left-1\/2 {
   left: 50% !important;
+}
+
+.z-10 {
+  z-index: 10 !important;
 }
 
 .m-auto {
@@ -665,12 +677,16 @@ video {
   width: 100vw !important;
 }
 
-.w-\[80\%\] {
-  width: 80% !important;
+.w-\[60\%\] {
+  width: 60% !important;
 }
 
 .w-full {
   width: 100% !important;
+}
+
+.w-\[300\%\] {
+  width: 300% !important;
 }
 
 .w-\[20\%\] {
@@ -679,6 +695,10 @@ video {
 
 .w-\[10\%\] {
   width: 10% !important;
+}
+
+.w-\[80\%\] {
+  width: 80% !important;
 }
 
 .max-w-\[50\%\] {
@@ -709,6 +729,10 @@ video {
   resize: none !important;
 }
 
+.flex-row {
+  flex-direction: row !important;
+}
+
 .flex-col {
   flex-direction: column !important;
 }
@@ -719,6 +743,10 @@ video {
 
 .justify-between {
   justify-content: space-between !important;
+}
+
+.justify-items-center {
+  justify-items: center !important;
 }
 
 .overflow-hidden {
@@ -786,7 +814,7 @@ video {
 }
 
 .bg-secondary {
-  background-color: #576c94 !important;
+  background-color: #8eade8 !important;
 }
 
 .bg-quaternary {
@@ -799,6 +827,10 @@ video {
 
 .bg-tertiary {
   background-color: #032e4b !important;
+}
+
+.bg-slate-100 {
+  background-color: #f1f5f9 !important;
 }
 
 .bg-white {
@@ -998,6 +1030,18 @@ video {
   }
 }
 
+.utils-bar span{
+  background-color: #ffd05a;
+  padding: 8px;
+  margin: 0 3px;
+  //width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: .5rem .5rem 0 0;
+}
+
 .hover\:bg-blue-200:hover {
   background-color: #bfdbfe !important;
 }
@@ -1028,6 +1072,12 @@ video {
           backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
 }
 
+.hover\:backdrop-brightness-200:hover {
+  --tw-backdrop-brightness: brightness(2) !important;
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
+          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
+}
+
 .hover\:backdrop-brightness-150:hover {
   --tw-backdrop-brightness: brightness(1.5) !important;
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
@@ -1036,6 +1086,18 @@ video {
 
 .group:hover .group-hover\:inline {
   display: inline !important;
+}
+
+.dark .dark\:bg-dark_primary {
+  background-color: #1c1f20 !important;
+}
+
+.dark .dark\:bg-dark_secondary {
+  background-color: #262a2b !important;
+}
+
+.dark .dark\:text-white {
+  color: #fff !important;
 }
 
 

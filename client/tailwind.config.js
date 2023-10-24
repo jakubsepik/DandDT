@@ -10,7 +10,7 @@ module.exports = {
     ringOpacity: false,
     textOpacity: false,
   },
-  content: ["./src/components/*.js", "./src/input.scss", "./src/*.js"],
+  content: ["./src/components/*.js", "./src/input.scss", "./src/*.js","./src/components/**/*.js"],
   theme: {
     fontFamily: {},
     extend: {
