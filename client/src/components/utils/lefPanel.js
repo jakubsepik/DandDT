@@ -6,7 +6,7 @@ function LeftPanel() {
 
 
   return (
-    <div className='bg-red=500 w-[20%]'>
+    <div className='bg-red=500 w-[20%] border-r-2 border-border'>
       LEFT
     </div>
   );

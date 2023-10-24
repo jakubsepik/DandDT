@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
-import {IoMdSettings} from "react-icons/io"
-import { DropdownButton, Dropdown } from "react-bootstrap";
+import { IoMdSettings, IoMdArrowDropdown } from "react-icons/io";
+import {MdLightMode, MdDarkMode} from "react-icons/md"
+import { DropdownButton, Dropdown, ToggleButton } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 
@@ -9,7 +10,12 @@ require("dotenv").config();
 
 const target = process.env.REACT_APP_HOST_BACKEND;
 
-const Navbar = () => {
+const Navbar = ({darkModeChange}) => {
+  const [dropdown, setDropdown] = useState(false);
+ 
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef);
+
   return (
     <nav className="flex bg-tertiary h-[8%] items-center border-b-[1px] border-border">
       <div className="px-8 py-2 text-lg font-bold text-[#ec2127]">D&DT</div>
@@ -28,27 +34,68 @@ const Navbar = () => {
       >
         <FaSignOutAlt />
       </span>
-      <DropdownButton title={<span className="inline-block"><IoMdSettings/></span>}>
-        <Dropdown.Item
-          as="button"
-          onClick={() => {
-            axios.get(target + "exportFiles").then((result) => {
-              const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-                JSON.stringify(result.data)
-              )}`;
-              const link = document.createElement("a");
-              link.href = jsonString;
-              link.download = "data.json";
 
-              link.click();
-            });
-          }}
+      <div className="text-white rounded ">
+        <button
+          ref={dropdown ? wrapperRef : null}
+          onClick={() => setDropdown(!dropdown)}
+          className=" flex flex-row relative py-2 px-2 rounded"
         >
-          Export in JSON
-        </Dropdown.Item>
-      </DropdownButton>
+          <IoMdSettings />
+          <IoMdArrowDropdown />
+
+          <ul className={
+              (dropdown ? "block" : "hidden") +
+              " settings text-black absolute bg-slate-100 top-100 left-[-100%] w-[300%] z-10 rounded-b-lg"
+            }
+            onClick={(e) => e.stopPropagation()}
+          >
+            <li>
+              <button
+                onClick={(event) => {
+                  axios.get(target + "exportFiles").then((result) => {
+                    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+                      JSON.stringify(result.data)
+                    )}`;
+                    const link = document.createElement("a");
+                    link.href = jsonString;
+                    link.download = "data.json";
+
+                    link.click();
+                  });
+                }}
+              >
+                Export to JSON
+              </button>
+            </li>
+            <li>
+              <button className="flex justify-center m-auto items-center gap-x-2"
+              onClick={() => {
+                darkModeChange()
+              }}>
+                <span>Theme</span>
+                <span>{(window.localStorage.getItem("darkMode")=="1"?<MdDarkMode/>:<MdLightMode/>)}</span>
+              </button>
+            </li>
+          </ul>
+        </button>
+      </div>
     </nav>
   );
+
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setDropdown(false);
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
 };
 
 export default Navbar;

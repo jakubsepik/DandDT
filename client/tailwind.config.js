@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   important: true,
   corePlugins: {
     // ...
@@ -16,10 +17,12 @@ module.exports = {
     extend: {
       colors: {
         primary: "#F1F6F9",
-        secondary: "#576c94",
+        secondary: "#8eade8",
         tertiary: "#032e4b",
         quaternary: "#0b4f7d",
-        border:'#606060'
+        border:'#606060',
+        dark_primary: "#1c1f20",
+        dark_secondary: "#262a2b",
       },
     },
   },

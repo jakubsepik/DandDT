@@ -113,9 +113,8 @@ function Directory(props) {
             {...providedDraggable.dragHandleProps}
           >
             <div
-              className="flex items-center h-10 p-2"
+              className="flex items-center h-10 p-2 text-black dark:text-white"
               {...getToggleProps({
-                style: { color: "black" },
                 onClick: () => setExpanded((x) => !x),
               })}
             >
@@ -123,7 +122,7 @@ function Directory(props) {
                 <GoFileDirectory />
               </span>
               {selectionTree.name}
-              <span className="ml-auto text-black">
+              <span className="ml-auto text-black dark:text-white">
                 {isExpanded ? <FcCollapse /> : <FcExpand />}
               </span>
               <span

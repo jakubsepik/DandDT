@@ -219,7 +219,7 @@ class Edit extends Component {
           id="body"
           value={this.state.body}
           onChange={this.onChange}
-          className="text-black h-2/3 w-full block bg-transparent backdrop-brightness-125 resize-none rounded p-1"
+          className="text-black dark:text-white h-2/3 w-full block bg-transparent backdrop-brightness-125 resize-none rounded p-1"
         />
         <div className="mt-6">{this.printLinks()}</div>
       </span>

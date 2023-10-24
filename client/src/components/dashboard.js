@@ -4,7 +4,7 @@ import Navbar from "../components/navbar";
 import Editor from "../components/editor";
 import Selection from "../components/selection";
 import Tab from "../components/tab";
-import LeftPanel from "./utils/lefPanel"
+import LeftPanel from "./utils/lefPanel";
 import BottomPanel from "./utils/bottomPanel";
 //import DraftEditor from "../components/draftEditor"
 import dotenv from "dotenv";
@@ -20,6 +20,7 @@ export default class Dashboard extends Component {
       editorsArray: [], //tabs to open editors
       selectionFilesArray: [], //all files for selection with id,name,tags
       currentEditor: null, //current open editor id
+      darkMode: parseInt(window.localStorage.getItem("darkMode")) || 0, //get darkmode settings
     };
     this.linkToFiles = [];
     this.focus_id = null;
@@ -124,37 +125,51 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div className="bg-primary h-screen ">
-        <Navbar />
-        <div className="w-screen h-[92%] flex">
-          <section className="w-[80%] h-full">
-          <LeftPanel/>
-            <div className="h-[6%] flex border-b-[1px] border-border">
-              {this.printEditorsTabs()}
-            </div>
-            <div className={"h-[94%] w-full bg-secondary"}>
-              {this.state.currentEditor ? (
-                <Editor
-                  key={this.state.currentEditor._id}
-                  setFocus={this.setFocus}
-                  fileObject={this.state.currentEditor}
-                  selectionLinks={this.state.selectionFilesArray}
-                  closeEditor={this.closeEditor}
-                  openEditor={this.openEditor}
-                  getFiles={this.getFiles}
-                />
-              ) : null}
-               <BottomPanel/>
-            </div>
-          </section>
-          <Selection
-            openEditor={this.openEditor}
-            getFiles={this.getFiles}
-            closeEditor={this.closeEditor}
-            selectionFilesArray={this.state.selectionFilesArray}
+      <span className={this.state.darkMode == 1 ? "dark" : ""}>
+        <div className={"bg-primary dark:bg-dark_primary h-screen "}>
+          <Navbar
+            darkModeChange={() => {
+              window.localStorage.setItem(
+                "darkMode",
+                this.state.darkMode == 1 ? 0 : 1
+              );
+              this.setState({ darkMode: parseInt(window.localStorage.getItem("darkMode"))});
+            }}
           />
+          <div className="w-screen h-[92%] flex">
+            <LeftPanel />
+            <section className="w-[60%] h-full">
+              <div className="h-[6%] flex border-b-[1px] border-border">
+                {this.printEditorsTabs()}
+              </div>
+              <div
+                className={
+                  "h-[94%] w-full bg-secondary dark:bg-dark_secondary relative"
+                }
+              >
+                {this.state.currentEditor ? (
+                  <Editor
+                    key={this.state.currentEditor._id}
+                    setFocus={this.setFocus}
+                    fileObject={this.state.currentEditor}
+                    selectionLinks={this.state.selectionFilesArray}
+                    closeEditor={this.closeEditor}
+                    openEditor={this.openEditor}
+                    getFiles={this.getFiles}
+                  />
+                ) : null}
+                <BottomPanel />
+              </div>
+            </section>
+            <Selection
+              openEditor={this.openEditor}
+              getFiles={this.getFiles}
+              closeEditor={this.closeEditor}
+              selectionFilesArray={this.state.selectionFilesArray}
+            />
+          </div>
         </div>
-      </div>
+      </span>
     );
   }
 }

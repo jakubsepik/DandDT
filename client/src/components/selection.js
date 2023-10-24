@@ -275,7 +275,7 @@ class Edit extends Component {
                     value={this.state.filter}
                     onChange={this.onChange}
                     placeholder="Search..."
-                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-b-[1px] border-b-quaternary outline-none text-black"
+                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-b-[1px] border-b-quaternary outline-none text-black dark:text-white"
                   />
                   {this.state.filter ? (
                     <span
