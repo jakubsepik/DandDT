@@ -128,6 +128,7 @@ export default class Dashboard extends Component {
         <Navbar />
         <div className="w-screen h-[92%] flex">
           <section className="w-[80%] h-full">
+          <LeftPanel/>
             <div className="h-[6%] flex border-b-[1px] border-border">
               {this.printEditorsTabs()}
             </div>
@@ -143,6 +144,7 @@ export default class Dashboard extends Component {
                   getFiles={this.getFiles}
                 />
               ) : null}
+               <BottomPanel/>
             </div>
           </section>
           <Selection
