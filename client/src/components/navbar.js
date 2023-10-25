@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import { IoMdSettings, IoMdArrowDropdown } from "react-icons/io";
-import {MdLightMode, MdDarkMode} from "react-icons/md"
+import { MdLightMode, MdDarkMode } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 
@@ -9,32 +9,21 @@ require("dotenv").config();
 
 const target = process.env.REACT_APP_HOST_BACKEND;
 
-const Navbar = ({darkModeChange}) => {
+const Navbar = ({ darkModeChange }) => {
   const [dropdown, setDropdown] = useState(false);
- 
+
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
 
   return (
-    <nav className="flex bg-tertiary h-[8%] items-center border-b-[1px] border-border">
+    <nav className="grid grid-cols-12 items-center bg-tertiary h-[8%] border-b-[1px] border-border">
       <div className="px-8 py-2 text-lg font-bold text-[#ec2127]">D&DT</div>
-      <span id="user" className="px-8 text-white">
-        <div>Welcome {window.sessionStorage.getItem("user")}</div>
-      </span>
-      <span
-        onClick={() => {
-          axios.get(target + "user/logout").then((res) => {
-            window.sessionStorage.removeItem("user");
-            window.location.reload();
-          });
-        }}
-        title="Logout"
-        className="hover:text-red-600 mx-8 cursor-pointer text-white"
-      >
-        <FaSignOutAlt />
-      </span>
 
-      <div className="text-white rounded ">
+      <div id="user" className="px-8 text-white col-span-2">
+        <div>Welcome {window.sessionStorage.getItem("user")}</div>
+      </div>
+
+      <div className="text-white rounded col-start-12">
         <button
           ref={dropdown ? wrapperRef : null}
           onClick={() => setDropdown(!dropdown)}
@@ -43,7 +32,8 @@ const Navbar = ({darkModeChange}) => {
           <IoMdSettings />
           <IoMdArrowDropdown />
 
-          <ul className={
+          <ul
+            className={
               (dropdown ? "block" : "hidden") +
               " settings dark:text-white dark:bg-dark_primary border-x-2 border-b-2 border-quaternary text-black absolute bg-slate-100 top-100 left-[-75%] w-[250%] z-10 rounded-b-lg text-sm"
             }
@@ -68,17 +58,44 @@ const Navbar = ({darkModeChange}) => {
               </button>
             </li>
             <li>
-              <button className="flex justify-center m-auto items-center gap-x-2"
-              onClick={() => {
-                darkModeChange()
-              }}>
+              <button
+                className="flex justify-center m-auto items-center gap-x-2"
+                onClick={() => {
+                  darkModeChange();
+                }}
+              >
                 <span>Theme</span>
-                <span>{(window.localStorage.getItem("darkMode")=="1"?<MdDarkMode/>:<MdLightMode/>)}</span>
+                <span>
+                  {window.localStorage.getItem("darkMode") == "1" ? (
+                    <MdDarkMode />
+                  ) : (
+                    <MdLightMode />
+                  )}
+                </span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  axios.get(target + "user/logout").then((res) => {
+                    window.sessionStorage.removeItem("user");
+                    window.location.reload();
+                  });
+                }}
+                title="Logout"
+                className="hover:text-red-600 flex justify-center m-auto items-center gap-x-2"
+              >
+                <span>Logout</span>
+                <span>
+                  <FaSignOutAlt />
+                </span>
               </button>
             </li>
           </ul>
         </button>
       </div>
+      
+
     </nav>
   );
 
