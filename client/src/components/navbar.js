@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import { IoMdSettings, IoMdArrowDropdown } from "react-icons/io";
 import {MdLightMode, MdDarkMode} from "react-icons/md"
-import { DropdownButton, Dropdown, ToggleButton } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 
@@ -46,7 +45,7 @@ const Navbar = ({darkModeChange}) => {
 
           <ul className={
               (dropdown ? "block" : "hidden") +
-              " settings text-black absolute bg-slate-100 top-100 left-[-100%] w-[300%] z-10 rounded-b-lg"
+              " settings dark:text-white dark:bg-dark_primary border-x-2 border-b-2 border-quaternary text-black absolute bg-slate-100 top-100 left-[-75%] w-[250%] z-10 rounded-b-lg text-sm"
             }
             onClick={(e) => e.stopPropagation()}
           >
