@@ -3,7 +3,6 @@ import { FaUserAlt } from "react-icons/fa";
 import { MdPassword, MdEmail } from "react-icons/md";
 import { Route } from "react-router-dom";
 
-// We import all the components we need in our app
 import Dashboard from "./components/dashboard";
 
 import axios from "axios";
@@ -159,7 +158,6 @@ export default class App extends Component {
        </>
     );
   }
-
   Login() {
     return (
       <>
@@ -216,11 +214,12 @@ export default class App extends Component {
           </form></>
     );
   }
+
   render() {
     return (
       <>
         <Toaster />
-        <div className="h-screen bg-gradient relative">
+        <div className={(window.localStorage.getItem("darkMode")==1?"login-bg":"")+" h-screen bg-[#3066b3] relative"}>
         <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
         <Route exact path="/">
           {() => {

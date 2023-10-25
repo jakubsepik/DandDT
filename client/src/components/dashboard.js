@@ -4,7 +4,7 @@ import Navbar from "../components/navbar";
 import Editor from "../components/editor";
 import Selection from "../components/selection";
 import Tab from "../components/tab";
-import LeftPanel from "./utils/lefPanel";
+import LeftPanel from "./lefPanel";
 import BottomPanel from "./utils/bottomPanel";
 //import DraftEditor from "../components/draftEditor"
 import dotenv from "dotenv";

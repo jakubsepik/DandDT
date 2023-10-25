@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-gradient {
-  background: rgb(48, 102, 179);
-  /*background: linear-gradient(
+.login-bg {
+  //background: rgb(48, 102, 179);
+  background: linear-gradient(
     0deg,
     rgba(3, 46, 106, 1) 0%,
     rgb(10, 25, 51) 80%
-  );*/
+  );
 }
 .login-title {
   color: #ffd05a;
