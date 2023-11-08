@@ -104,7 +104,11 @@ function Directory(props) {
     return (
       <Draggable draggableId={selectionTree._id} index={props.index}>
         {(providedDraggable)=>(
-          <li>
+          <li 
+          ref={providedDraggable.innerRef}
+            {...providedDraggable.draggableProps}
+            {...providedDraggable.dragHandleProps}
+          >
             <div
               className="flex items-center h-10 p-2 text-black dark:text-white"
               
