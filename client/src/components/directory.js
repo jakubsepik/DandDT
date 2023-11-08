@@ -111,7 +111,7 @@ function Directory(props) {
           >
             <div
               className="flex items-center h-10 p-2 text-black dark:text-white"
-              
+              onClick={()=>setExpanded(!isExpanded)}
             >
               <span className="pr-2">
                 <GoFileDirectory />
@@ -143,7 +143,7 @@ function Directory(props) {
             <Droppable droppableId={selectionTree._id} type="directory">
               {(provided) => (
                 <ul
-                  className="pl-5"
+                  className={"pl-5 " +(!isExpanded?"hidden":"")}
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
