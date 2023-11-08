@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useCollapse from "react-collapsed";
+
 import File from "../components/file";
 import { FcCollapse, FcExpand } from "react-icons/fc";
 import { GoFileDirectory } from "react-icons/go";
@@ -11,9 +11,6 @@ var deleteConfirm = null;
 
 function Directory(props) {
   const [isExpanded, setExpanded] = useState(false);
-  const { getToggleProps, getCollapseProps } = useCollapse({
-    isExpanded,
-  });
 
   const [selectionTree] = useState(props.selectionTree);
   const normalize_filter = props.filter
@@ -106,17 +103,11 @@ function Directory(props) {
   else
     return (
       <Draggable draggableId={selectionTree._id} index={props.index}>
-        {(providedDraggable) => (
-          <li
-            ref={providedDraggable.innerRef}
-            {...providedDraggable.draggableProps}
-            {...providedDraggable.dragHandleProps}
-          >
+        {(providedDraggable)=>(
+          <li>
             <div
               className="flex items-center h-10 p-2 text-black dark:text-white"
-              {...getToggleProps({
-                onClick: () => setExpanded((x) => !x),
-              })}
+              
             >
               <span className="pr-2">
                 <GoFileDirectory />
@@ -148,7 +139,6 @@ function Directory(props) {
             <Droppable droppableId={selectionTree._id} type="directory">
               {(provided) => (
                 <ul
-                  {...getCollapseProps()}
                   className="pl-5"
                   {...provided.droppableProps}
                   ref={provided.innerRef}
