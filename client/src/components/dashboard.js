@@ -5,7 +5,7 @@ import Editor from "../components/editor";
 import Selection from "../components/selection";
 import Tab from "../components/tab";
 import LeftPanel from "./lefPanel";
-import BottomPanel from "./utils/bottomPanel";
+import BottomPanel from "./bottomPanel";
 //import DraftEditor from "../components/draftEditor"
 import dotenv from "dotenv";
 
@@ -125,15 +125,17 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <span className={this.state.darkMode == 1 ? "dark" : ""}>
+      <span className={this.state.darkMode === 1 ? "dark" : ""}>
         <div className={"bg-primary dark:bg-dark_primary h-screen "}>
           <Navbar
             darkModeChange={() => {
               window.localStorage.setItem(
                 "darkMode",
-                this.state.darkMode == 1 ? 0 : 1
+                this.state.darkMode === 1 ? 0 : 1
               );
-              this.setState({ darkMode: parseInt(window.localStorage.getItem("darkMode"))});
+              this.setState({
+                darkMode: parseInt(window.localStorage.getItem("darkMode")),
+              });
             }}
           />
           <div className="w-screen h-[92%] flex">
@@ -142,11 +144,7 @@ export default class Dashboard extends Component {
               <div className="h-[6%] flex border-b-[1px] border-border">
                 {this.printEditorsTabs()}
               </div>
-              <div
-                className={
-                  "h-[94%] w-full bg-secondary dark:bg-dark_secondary relative"
-                }
-              >
+              <div className="h-[94%] w-full bg-secondary dark:bg-dark_secondary relative">
                 {this.state.currentEditor ? (
                   <Editor
                     key={this.state.currentEditor._id}

@@ -199,7 +199,7 @@ class Edit extends Component {
         <div className="flex h-[12%] items-center">
           <div className="text-white font-['Georgia'] font-semibold text-lg px-4">
             {this.state.edit ? (
-              <input 
+              <input
                 className="bg-transparent border-b-[1px] border-b-quaternary outline-none text-white"
                 value={this.state.name}
                 onChange={this.onChange}
@@ -209,7 +209,9 @@ class Edit extends Component {
               this.state.name
             )}
           </div>
-          <div className={!this.state.edit?"tags ml-auto":"ml-auto"}>{this.printTags()}</div>
+          <div className={!this.state.edit ? "tags ml-auto" : "ml-auto"}>
+            {this.printTags()}
+          </div>
         </div>
         <textarea
           onBlur={() => {

@@ -84,134 +84,135 @@ export default class App extends Component {
   Register() {
     return (
       <>
-          <h2 className="text-center login-title custom-font my-5">
-            Create account
-          </h2>
-          <form onSubmit={this.onRegister}>
-            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
-              <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <FaUserAlt />
-              </span>
-              <input
-                onChange={this.onChange}
-                value={this.state.username}
-                id="username"
-                type="text"
-                className="w-full bg-transparent pl-10 py-1 rounded"
-                placeholder="Username"
-                required
-                minLength="3"
-                maxLength="12"
-              />
-            </div>
-            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
-              <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <MdEmail />
-              </span>
-              <input
-                onChange={this.onChange}
-                value={this.state.email}
-                id="email"
-                type="email"
-                className="w-full bg-transparent pl-10 py-1 rounded"
-                placeholder="Email"
-                required
-              />
-            </div>
+        <h2 className="text-center login-title custom-font my-5">
+          Create account
+        </h2>
+        <form onSubmit={this.onRegister}>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <span className="absolute top-1/2 -translate-y-1/2 p-2">
+              <FaUserAlt />
+            </span>
+            <input
+              onChange={this.onChange}
+              value={this.state.username}
+              id="username"
+              type="text"
+              className="w-full bg-transparent pl-10 py-1 rounded"
+              placeholder="Username"
+              required
+              minLength="3"
+              maxLength="12"
+            />
+          </div>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <span className="absolute top-1/2 -translate-y-1/2 p-2">
+              <MdEmail />
+            </span>
+            <input
+              onChange={this.onChange}
+              value={this.state.email}
+              id="email"
+              type="email"
+              className="w-full bg-transparent pl-10 py-1 rounded"
+              placeholder="Email"
+              required
+            />
+          </div>
 
-            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
-              <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <MdPassword />
-              </span>
-              <input
-                onChange={this.onChange}
-                value={this.state.password}
-                id="password"
-                type="password"
-                className="w-full bg-transparent pl-10 py-1 rounded"
-                placeholder="Password"
-                required
-                minLength="3"
-                maxLength="22"
-              />
-            </div>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <span className="absolute top-1/2 -translate-y-1/2 p-2">
+              <MdPassword />
+            </span>
+            <input
+              onChange={this.onChange}
+              value={this.state.password}
+              id="password"
+              type="password"
+              className="w-full bg-transparent pl-10 py-1 rounded"
+              placeholder="Password"
+              required
+              minLength="3"
+              maxLength="22"
+            />
+          </div>
 
-            <button
-              type="submit"
-              className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+          <button
+            type="submit"
+            className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+          >
+            Register
+          </button>
+          <div className="text-white text-center">
+            Already have an account? Login {}
+            <span
+              onClick={() => {
+                this.setState({ interface: 0 });
+              }}
+              className="cursor-pointer underline"
             >
-              Register
-            </button>
-            <div className="text-white text-center">
-              Already have an account? Login {}
-              <span
-                onClick={() => {
-                  this.setState({ interface: 0 });
-                }}
-                className="cursor-pointer underline"
-              >
-                here
-              </span>
-              .
-            </div>
-          </form>
-       </>
+              here
+            </span>
+            .
+          </div>
+        </form>
+      </>
     );
   }
   Login() {
     return (
       <>
-          <h2 className="text-center login-title custom-font my-5">Sign in</h2>
-          <form onSubmit={this.onLogin}>
-            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
-              <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <MdEmail />
-              </span>
-              <input
-                onChange={this.onChange}
-                value={this.state.email}
-                id="email"
-                type="email"
-                className="w-full bg-transparent pl-10 py-1 rounded"
-                placeholder="Email"
-                required
-              />
-            </div>
+        <h2 className="text-center login-title custom-font my-5">Sign in</h2>
+        <form onSubmit={this.onLogin}>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <span className="absolute top-1/2 -translate-y-1/2 p-2">
+              <MdEmail />
+            </span>
+            <input
+              onChange={this.onChange}
+              value={this.state.email}
+              id="email"
+              type="email"
+              className="w-full bg-transparent pl-10 py-1 rounded"
+              placeholder="Email"
+              required
+            />
+          </div>
 
-            <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
-              <span className="absolute top-1/2 -translate-y-1/2 p-2">
-                <MdPassword />
-              </span>
-              <input
-                onChange={this.onChange}
-                value={this.state.password}
-                id="password"
-                type="password"
-                className="w-full bg-transparent pl-10 py-1 rounded"
-                placeholder="Password"
-                required
-              />
-            </div>
+          <div className="flex bg-white relative rounded border-solid border-indigo-500 border-2 my-5">
+            <span className="absolute top-1/2 -translate-y-1/2 p-2">
+              <MdPassword />
+            </span>
+            <input
+              onChange={this.onChange}
+              value={this.state.password}
+              id="password"
+              type="password"
+              className="w-full bg-transparent pl-10 py-1 rounded"
+              placeholder="Password"
+              required
+            />
+          </div>
 
-            <button
-              type="submit"
-              className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+          <button
+            type="submit"
+            className="m-auto block bg-indigo-500 custom-font px-4 py-1 rounded text-lg font-semibold text-white my-5 transition-colors hover:bg-indigo-800"
+          >
+            Login
+          </button>
+          <div className="text-white">
+            Don't have an account? Register {}
+            <span
+              onClick={() => {
+                this.setState({ interface: 1 });
+              }}
+              className="cursor-pointer underline"
             >
-              Login
-            </button>
-            <div className="text-white">
-              Don't have an account? Register {}
-              <span
-                onClick={() => {
-                  this.setState({ interface: 1 });
-                }}
-                className="cursor-pointer underline"
-              >
-                here
-              </span>
-              .
-            </div>
-          </form></>
+              here
+            </span>
+            .
+          </div>
+        </form>
+      </>
     );
   }
 
@@ -219,23 +220,28 @@ export default class App extends Component {
     return (
       <>
         <Toaster />
-        <div className={(window.localStorage.getItem("darkMode")==1?"login-bg":"")+" h-screen bg-[#3066b3] relative"}>
-        <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
-        <Route exact path="/">
-          {() => {
-            switch (this.state.interface) {
-              case 0:
-                return this.Login();
-              case 1:
-                return this.Register();
-              case 2:
-                return <Dashboard />;
-              default:
-                return null;
-            }
-          }}
-        </Route>
-        </div>
+        <div
+          className={
+            (window.localStorage.getItem("darkMode") === 1 ? "login-bg" : "") +
+            " h-screen bg-[#3066b3] relative"
+          }
+        >
+          <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+            <Route exact path="/">
+              {() => {
+                switch (this.state.interface) {
+                  case 0:
+                    return this.Login();
+                  case 1:
+                    return this.Register();
+                  case 2:
+                    return <Dashboard />;
+                  default:
+                    return null;
+                }
+              }}
+            </Route>
+          </div>
         </div>
       </>
     );

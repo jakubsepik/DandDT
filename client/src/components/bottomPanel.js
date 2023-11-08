@@ -4,7 +4,7 @@ import {TiWeatherPartlySunny} from 'react-icons/ti'
 import {RiSoundModuleLine} from 'react-icons/ri'
 
 function BottomPanel() {
-  const [count, setCount] = useState(0);
+  //const [count, setCount] = useState(0);
 
 
   return (

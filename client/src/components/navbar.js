@@ -66,7 +66,7 @@ const Navbar = ({ darkModeChange }) => {
               >
                 <span>Theme</span>
                 <span>
-                  {window.localStorage.getItem("darkMode") == "1" ? (
+                  {window.localStorage.getItem("darkMode") === "1" ? (
                     <MdDarkMode />
                   ) : (
                     <MdLightMode />
@@ -94,8 +94,6 @@ const Navbar = ({ darkModeChange }) => {
           </ul>
         </button>
       </div>
-      
-
     </nav>
   );
 
