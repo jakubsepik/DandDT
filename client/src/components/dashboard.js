@@ -126,7 +126,7 @@ export default class Dashboard extends Component {
   render() {
     return (
       <span className={this.state.darkMode === 1 ? "dark" : ""}>
-        <div className={"bg-primary dark:bg-dark_primary h-screen "}>
+        <div className={"bg-primary dark:bg-dark_primary h-screen"}>
           <Navbar
             darkModeChange={() => {
               window.localStorage.setItem(

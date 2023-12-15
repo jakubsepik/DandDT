@@ -12,8 +12,7 @@ const File = (props) => {
     >
       {(provided, snapshot) => {
         return (
-          <li
-            className="whitespace-nowrap overflow-hidden rounded bg-primary dark:bg-dark_primary text-black dark:text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
+          <li className="whitespace-nowrap overflow-hidden rounded bg-primary dark:bg-dark_primary text-black dark:text-white justify-between px-2 cursor-pointer hover:backdrop-brightness-50 flex items-center h-10"
             onClick={() => {
               props.renderFile(props._id);
             }}

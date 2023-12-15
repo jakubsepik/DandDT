@@ -14,7 +14,7 @@ const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
   const token = req.cookies.token;
-  if (req.headers["postman-token"]) {
+  if (req.headers["postman-token"] && process.env.MODE == "DEVELOPMENT") {
     res.locals.user = "test";
     return next();
   }
@@ -25,6 +25,8 @@ const authorization = (req, res, next) => {
   try {
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
     res.locals.user = data.username;
+    res.locals.email = data.email;
+    res.locals._id = data._id;
     return next();
   } catch (e) {
     return res.sendStatus(401);
@@ -36,7 +38,7 @@ recordRoutes.route("/getFiles").get(authorization, (req, res) => {
   db_connect
     .collection("data")
     .find(
-      { author: res.locals.user },
+      { author: res.locals._id },
       { projection: { _id: 1, name: 1, tags: 1 } }
     )
     .toArray((err, result) => {
@@ -48,7 +50,7 @@ recordRoutes.route("/getFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("data")
-    .findOne({ _id: ObjectId(req.body.id), author: res.locals.user })
+    .findOne({ _id: ObjectId(req.body.id), author: res.locals._id })
     .then((result) => {
       res.status(200).json(result);
     })
@@ -59,7 +61,6 @@ recordRoutes.route("/getFile").post(authorization, (req, res) => {
 
 recordRoutes.route("/addFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  //console.log(req.body)
   if (
     !(
       Object.keys(req.body).length === 1 &&
@@ -72,7 +73,8 @@ recordRoutes.route("/addFile").post(authorization, (req, res) => {
       .json({ message: "Wrong parameters. Refresh page and try again" });
     return;
   }
-  req.body.author = res.locals.user;
+  req.body.authorName = res.locals.user;
+  req.body.author = res.locals._id;
   req.body.body = "";
   req.body.tags = [];
   req.body.links = [];
@@ -84,7 +86,7 @@ recordRoutes.route("/addFile").post(authorization, (req, res) => {
       db_connect
         .collection("login")
         .updateOne(
-          { username: res.locals.user },
+          { _id: ObjectId(res.locals._id) },
           {
             $push: {
               selectionTree: {
@@ -109,7 +111,7 @@ recordRoutes.route("/updateFile").post(authorization, (req, res) => {
   db_connect
     .collection("data")
     .updateOne(
-      { _id: ObjectId(req.body._id), author: res.locals.user },
+      { _id: ObjectId(req.body._id), author: res.locals._id },
       {
         $set: {
           body: req.body.body,
@@ -134,41 +136,50 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
       .send({ message: "Wrong parameters. Refresh page and try again" });
     return;
   }
+
+  let output = 0;
+
+  db_connect
+    .collection("login")
+    .updateOne(
+      { _id: ObjectId(res.locals._id) },
+      { $pull: { selectionTree: req.body._id } }
+    )
+    .then((result2) => {
+      output = 1;
+    })
+    .catch((err) => {
+      throw err;
+    });
+
   db_connect
     .collection("data")
-    .deleteOne({ _id: ObjectId(req.body._id), author: res.locals.user })
+    .deleteOne({ _id: ObjectId(req.body._id), author: res.locals._id })
     .then((result) => {
       if (result.deletedCount === 1) {
         db_connect
           .collection("data")
           .updateMany(
-            { author: res.locals.user },
+            { author: res.locals._id },
             { $pull: { links: req.body._id } },
             (err, obj) => {
-              console.log(obj);
               if (err) throw err;
             }
           );
-
-        db_connect
-          .collection("login")
-          .updateOne(
-            { username: res.locals.user },
-            { $pull: { selectionTree: req.body._id } }
-          )
-          .then((result2) => {
-            console.log(result2);
-          })
-          .catch((err) => {
-            throw err;
-          });
-
-        res.status(202).send();
+        res.status(200).send({ message: "File deleted"});
       } else {
-        res.status(400).send({
-          message: "Wrong parameters. Refresh page and try again",
-        });
-        return;
+        if (output === 1) {
+          res
+            .status(200)
+            .send({
+              message: "File not found but id was deleted from Selection Tree",
+            });
+        } else {
+          res.status(400).send({
+            message: "Wrong parameters. Refresh page and try again",
+          });
+          return;
+        }
       }
     })
     .catch((err) => {
@@ -198,7 +209,7 @@ recordRoutes.route("/addDirectory").post(authorization, (req, res) => {
   db_connect
     .collection("login")
     .updateOne(
-      { username: res.locals.user },
+      { _id: ObjectId(res.locals._id) },
       {
         $push: {
           selectionTree: {
@@ -223,24 +234,28 @@ recordRoutes.route("/deleteDirectory").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("login")
-    .findOne({ username: res.locals.user })
+    .findOne({ _id: ObjectId(res.locals._id) })
     .then((result) => {
       var directory_index = result.selectionTree.findIndex(
         (x) => x._id === req.body._id
       );
-      if (directory_index===-1)
+      if (directory_index === -1)
         res
           .status(400)
           .json({ message: "Wrong parameters. Refresh page and try again" });
       var files = result.selectionTree[directory_index].files;
       result.selectionTree.splice(directory_index, 1, ...files);
 
-      db_connect.collection("login").updateOne({ username: res.locals.user },
-        { $set: { selectionTree: result.selectionTree } }).then((result2)=>{
-          result2.newSelectionTree=result.selectionTree;
+      db_connect
+        .collection("login")
+        .updateOne(
+          { _id: ObjectId(res.locals._id) },
+          { $set: { selectionTree: result.selectionTree } }
+        )
+        .then((result2) => {
+          result2.newSelectionTree = result.selectionTree;
           res.status(200).json(result2);
-        })
-      
+        });
     });
 });
 
@@ -249,12 +264,12 @@ recordRoutes.route("/exportFiles").get(authorization, async (req, res) => {
   var await_treeselection = await db_connect
     .collection("login")
     .findOne(
-      { username: res.locals.user },
+      { _id: ObjectId(res.locals._id) },
       { projection: { selectionTree: 1 } }
     );
   db_connect
     .collection("data")
-    .find({ author: res.locals.user })
+    .find({ author: res.locals._id })
     .toArray()
     .then((result) => {
       res.setHeader("Content-Type", "application/json");
@@ -275,16 +290,16 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("login")
-    .findOne({ username: res.locals.user }, function (err, obj) {
+    .findOne({ _id: ObjectId(res.locals._id) }, function (err, obj) {
       if (err) throw err;
       console.log(obj.selectionTree);
       if (obj.selectionTree) res.status(200).json(obj.selectionTree);
       else {
-        //if selectionTree does not exist
+        //if selectionTree does not exist create new
         //great for reseting
         db_connect
           .collection("data")
-          .find({ author: res.locals.user }, { projection: { _id: 1 } })
+          .find({ author: res.locals._id }, { projection: { _id: 1 } })
           .toArray((err, result) => {
             const array = [];
             result.forEach((element) => {
@@ -293,7 +308,7 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
             db_connect
               .collection("login")
               .updateOne(
-                { username: res.locals.user },
+                { _id: ObjectId(res.locals._id) },
                 { $set: { selectionTree: array } }
               );
             res.status(200).json(array);
@@ -307,7 +322,7 @@ recordRoutes.route("/updateSelectionTree").post(authorization, (req, res) => {
   db_connect
     .collection("login")
     .updateOne(
-      { username: res.locals.user },
+      { _id: ObjectId(res.locals._id) },
       { $set: { selectionTree: req.body.selectionTree } },
       function (err, result) {
         if (err) throw err;

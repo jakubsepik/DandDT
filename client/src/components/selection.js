@@ -49,7 +49,7 @@ class Edit extends Component {
       .then((response) => {
         this.props.closeEditor(_id);
         this.props.getFiles();
-        toast.success("File deleted");
+        toast.success(response.data.message);
       });
   }
   deleteDirectory(_id) {
@@ -84,22 +84,20 @@ class Edit extends Component {
       this.state.selectionFilesArray.length === 0
     )
       return null;
-
+    //console.log(this.state.selectionTree);
     return this.state.selectionTree.map((element, index) => {
       if (element.constructor === Object) {
         return (
-          <>
-            <Directory
-              key={element._id}
-              selectionFilesArray={this.state.selectionFilesArray}
-              selectionTree={element}
-              filter={this.state.filter}
-              renderFile={this.renderFile}
-              deleteFile={this.deleteFile}
-              deleteDirectory={this.deleteDirectory}
-              index={index}
-            />
-          </>
+          <Directory
+            key={element._id}
+            selectionFilesArray={this.state.selectionFilesArray}
+            selectionTree={element}
+            filter={this.state.filter}
+            renderFile={this.renderFile}
+            deleteFile={this.deleteFile}
+            deleteDirectory={this.deleteDirectory}
+            index={index}
+          />
         );
       } else {
         let item = this.state.selectionFilesArray.find(
@@ -110,10 +108,9 @@ class Edit extends Component {
           .replace(/\p{Diacritic}/gu, "")
           .toLowerCase()
           .trim();
-        if (!item) {
-          return false;
-        }
+
         if (
+          !item ||
           !(
             item.name
               .normalize("NFD")
@@ -134,8 +131,12 @@ class Edit extends Component {
               return false;
             })
           )
-        )
+        ){
+          //this.deleteFile(element);
           return null;
+        }
+          
+
         let tags = [];
         if (item.hasOwnProperty("tags")) {
           item.tags.sort();
@@ -178,11 +179,11 @@ class Edit extends Component {
   render() {
     //console.log(this.state.selectionTree);
     return (
-      <div className="h-full w-[20%] border-l-2 border-border flex overflow-y-auto">
+      <div className="h-full w-[20%] border-l-2 border-border flex flex-col">
         <DragDropContext
           onDragStart={(result) => {}}
           onDragEnd={(result) => {
-            console.log(result);
+            //console.log(result);
 
             const arr = this.state.selectionTree;
 
@@ -253,6 +254,47 @@ class Edit extends Component {
             }*/
           }}
         >
+          <div className="relative rounded bg-primary dark:bg-dark_primary text-black dark:text-white justify-between px-2 py-5 flex items-center h-12">
+            <div className="text-quaternary text-xl w-[10%]">
+              <AiOutlineSearch />
+            </div>
+
+            <input
+              id="filter"
+              type="text"
+              value={this.state.filter}
+              onChange={this.onChange}
+              placeholder="Search..."
+              className="w-[80%] mx-1 px-2 py-1 bg-transparent border-b-[1px] border-b-quaternary outline-none text-black dark:text-white"
+            />
+            {this.state.filter ? (
+              <span
+                className="text-quaternary absolute right-[15%] cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.setState({ filter: "" });
+                }}
+              >
+                <MdClear />
+              </span>
+            ) : null}
+
+            <Dropdown>
+              <div className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl">
+                <Dropdown.Toggle as={CustomToggle}>
+                  <AiFillPlusCircle />
+                </Dropdown.Toggle>
+              </div>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <div onClick={this.createFile}>Create File</div>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <div onClick={this.createDirectory}>Create Directory</div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
           <Droppable
             droppableId="Selection"
             isCombineEnabled
@@ -260,53 +302,10 @@ class Edit extends Component {
           >
             {(provided) => (
               <ul
-                className="w-full h-full overflow-x-hidden"
+                className="w-full h-full overflow-x-hidden overflow-y-auto"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <li className="flex items-center py-2 px-1 relative">
-                  <div className="text-quaternary text-xl w-[10%]">
-                    <AiOutlineSearch />
-                  </div>
-
-                  <input
-                    id="filter"
-                    type="text"
-                    value={this.state.filter}
-                    onChange={this.onChange}
-                    placeholder="Search..."
-                    className="w-[80%] mx-1 px-2 py-1 bg-transparent border-b-[1px] border-b-quaternary outline-none text-black dark:text-white"
-                  />
-                  {this.state.filter ? (
-                    <span
-                      className="text-quaternary absolute right-[15%] cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        this.setState({ filter: "" });
-                      }}
-                    >
-                      <MdClear />
-                    </span>
-                  ) : null}
-
-                  <Dropdown>
-                    <div className="w-[10%] text-quaternary cursor-pointer hover:brightness-200 text-xl">
-                      <Dropdown.Toggle as={CustomToggle}>
-                        <AiFillPlusCircle />
-                      </Dropdown.Toggle>
-                    </div>
-                    <Dropdown.Menu>
-                      <Dropdown.Item>
-                        <div onClick={this.createFile}>Create File</div>
-                      </Dropdown.Item>
-                      <Dropdown.Item>
-                        <div onClick={this.createDirectory}>
-                          Create Directory
-                        </div>
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </li>
                 {this.printFiles()}
                 {provided.placeholder}
               </ul>

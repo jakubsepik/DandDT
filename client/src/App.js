@@ -226,7 +226,7 @@ export default class App extends Component {
             " h-screen bg-[#3066b3] relative"
           }
         >
-          <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col">
+          <div className="absolute left-1/2 -translate-x-1/2 font-mono flex flex-col overflow-hidden">
             <Route exact path="/">
               {() => {
                 switch (this.state.interface) {

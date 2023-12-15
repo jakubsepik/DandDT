@@ -158,7 +158,6 @@ class Edit extends Component {
     this.props.selectionLinks.forEach((element) => {
       links.push({ value: element._id, label: element.name });
     });
-    console.log(value);
     return (
       <Select
         menuPlacement="top"

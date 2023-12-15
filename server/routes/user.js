@@ -14,10 +14,10 @@ const dbo = require("../db/conn");
 
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
 
 //verify token
 recordRoutes.route("/verify").get((req, res) => {
-  console.log("verify");
   if (!req.cookies.token) {
     res.json({ login: null });
   } else
@@ -34,7 +34,7 @@ recordRoutes.route("/verify").get((req, res) => {
 
 recordRoutes.route("/login").post((req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  console.log("login");
+  //console.log("login");
   myquery = { email: req.body.email };
   db_connect.collection("login").findOne(myquery, async function (err, result) {
     if (err) throw err;
@@ -48,7 +48,9 @@ recordRoutes.route("/login").post((req, res) => {
     }
     if (compare) {
       username = result.username;
-      token = jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
+      email = result.email;
+      _id = result._id.toString();
+      token = jwt.sign({ username: username, email: email, _id: _id }, process.env.TOKEN_SECRET, {
         expiresIn: "1d",
       });
       res
@@ -78,7 +80,6 @@ recordRoutes.route("/logout").get((req, res) => {
 
 recordRoutes.route("/register").post((req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  console.log("register");
   var body = req.body;
 
   if (
@@ -147,5 +148,32 @@ recordRoutes.route("/register").post((req, res) => {
       }
     });
 });
+
+recordRoutes.route("/resetPassword").post((req,res)=>{
+  if(!req.body.email){
+    res.status(400).json({message:"Wrong or missing email"})
+    return
+  }
+  let db_connect = dbo.getDb("DandDT");
+  db_connect.collection("login").findOne({email:req.body.email},{projection:{resetTimestamp:1}}).then((result)=>{
+    const now = new Date();
+    const diffInMs = now - result.resetTimestamp;
+    if(result.timestamp==0 || diffInMs>=28800000){
+      res.status(200).json({message:"The system has sent a password reset email, check your inbox"})
+      result
+    }
+  }).catch((err)=>{
+    res.status(500).send()
+    return
+  })
+
+  let token = crypto.randomBytes(32).toString("hex")
+  let timestamp = new Date()
+  db_connect.collection("login").updateOne({email:req.body.email},{$set:{resetToken:token,resetTimestamp:timestamp}}).catch((err)=>{
+    res.status(500)
+  }).then((result)=>{
+    res.status(200).send(result)
+  })
+})
 
 module.exports = recordRoutes;

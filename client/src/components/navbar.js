@@ -23,8 +23,8 @@ const Navbar = ({ darkModeChange }) => {
         <div>Welcome {window.sessionStorage.getItem("user")}</div>
       </div>
 
-      <div className="text-white rounded col-start-12">
-        <button
+      <div className="text-white rounded col-start-12 inline-block cursor-pointer">
+        <div
           ref={dropdown ? wrapperRef : null}
           onClick={() => setDropdown(!dropdown)}
           className=" flex flex-row relative py-2 px-2 rounded"
@@ -35,12 +35,13 @@ const Navbar = ({ darkModeChange }) => {
           <ul
             className={
               (dropdown ? "block" : "hidden") +
-              " settings dark:text-white dark:bg-dark_primary border-x-2 border-b-2 border-quaternary text-black absolute bg-slate-100 top-100 left-[-75%] w-[250%] z-10 rounded-b-lg text-sm"
+              " settings dark:text-white dark:bg-dark_primary border-x-2 border-b-2 border-quaternary text-black absolute bg-slate-100 top-100 left-[-25%] w-[100%] z-10 rounded-b-lg text-sm"
             }
             onClick={(e) => e.stopPropagation()}
           >
             <li>
               <button
+                className="flex justify-center m-auto items-center gap-x-2"
                 onClick={(event) => {
                   axios.get(target + "exportFiles").then((result) => {
                     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
@@ -92,7 +93,7 @@ const Navbar = ({ darkModeChange }) => {
               </button>
             </li>
           </ul>
-        </button>
+        </div>
       </div>
     </nav>
   );
