@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../components/navbar";
 import Editor from "../components/editor";
 import Selection from "../components/selection";
+import Selection from "./rightPanel";
 import Tab from "../components/tab";
 import LeftPanel from "./lefPanel";
 import BottomPanel from "./bottomPanel";

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import dotenv from "dotenv";
-import File from "../components/file";
-import Directory from "../components/directory";
+import File from "./file";
+import Directory from "./directory";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { AiFillPlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { MdClear } from "react-icons/md";
