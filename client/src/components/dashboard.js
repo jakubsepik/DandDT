@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import Editor from "../components/editor";
-import Selection from "../components/selection";
-import Selection from "./rightPanel";
+import FileSelection from "./rightPanel";
 import Tab from "../components/tab";
 import LeftPanel from "./lefPanel";
 import BottomPanel from "./bottomPanel";
@@ -160,7 +159,7 @@ export default class Dashboard extends Component {
                 <BottomPanel />
               </div>
             </section>
-            <Selection
+            <FileSelection
               openEditor={this.openEditor}
               getFiles={this.getFiles}
               closeEditor={this.closeEditor}
