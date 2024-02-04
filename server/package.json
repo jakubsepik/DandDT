@@ -3,7 +3,6 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "powershell.exe -file build.ps1",
     "start": "node server.js"
   },
   "private": true,
