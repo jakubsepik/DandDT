@@ -1,6 +1,5 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "dndt-client",
   "private": true,
   "type": "module",
   "dependencies": {

@@ -1,0 +1,11 @@
+{
+  "name": "danddt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./server/server.js",
+  "scripts": {
+    "postinstall": "npm install --prefix server && npm install --prefix client"
+  },
+  "author": "jakubsepik",
+  "license": "GNU GPL V3"
+}
