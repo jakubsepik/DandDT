@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: process.env.FRONTEND_IP, credentials: true }));
 app.use(express.json());
 
-if(process.env.MODE!=="DEVELOPMENT")
+if(process.env.NODE_ENV!=="development")
   app.use(express.static(path.join("./","build")));
 app.use("/api/user", require("./routes/user"));
 app.use("/api", require("./routes/record"));

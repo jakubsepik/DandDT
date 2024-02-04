@@ -14,7 +14,7 @@ const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
   const token = req.cookies.token;
-  if (req.headers["postman-token"] && process.env.MODE == "DEVELOPMENT") {
+  if (req.headers["postman-token"] && process.env.NODE_ENV == "development") {
     res.locals.user = "test";
     return next();
   }
