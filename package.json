@@ -7,5 +7,8 @@
     "postinstall": "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
   },
   "author": "jakubsepik",
-  "license": "GNU GPL V3"
+  "license": "GNU GPL V3",
+  "engines": {
+    "node": "16.19.0"
+  }
 }
