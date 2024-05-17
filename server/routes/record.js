@@ -128,8 +128,6 @@ recordRoutes.route("/updateFile").post(authorization, (req, res) => {
 
 recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  console.log("deleted file");
-  console.log(req.body);
   if (!req.body._id || !ObjectId.isValid(req.body._id)) {
     res
       .status(400)
@@ -166,14 +164,12 @@ recordRoutes.route("/deleteFile").post(authorization, (req, res) => {
               if (err) throw err;
             }
           );
-        res.status(200).send({ message: "File deleted"});
+        res.status(200).send({ message: "File deleted" });
       } else {
         if (output === 1) {
-          res
-            .status(200)
-            .send({
-              message: "File not found but id was deleted from Selection Tree",
-            });
+          res.status(200).send({
+            message: "File not found but id was deleted from Selection Tree",
+          });
         } else {
           res.status(400).send({
             message: "Wrong parameters. Refresh page and try again",
@@ -292,7 +288,6 @@ recordRoutes.route("/getSelectionTree").get(authorization, (req, res) => {
     .collection("login")
     .findOne({ _id: ObjectId(res.locals._id) }, function (err, obj) {
       if (err) throw err;
-      console.log(obj.selectionTree);
       if (obj.selectionTree) res.status(200).json(obj.selectionTree);
       else {
         //if selectionTree does not exist create new
@@ -329,6 +324,111 @@ recordRoutes.route("/updateSelectionTree").post(authorization, (req, res) => {
         res.status(200).json(result);
       }
     );
+});
+
+recordRoutes.route("/addGroup").post(authorization, (req, res) => {
+  if (!req.body.name) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
+
+  let db_connect = dbo.getDb("DandDT");
+  const new_id = new ObjectId();
+  db_connect.collection("login").updateOne(
+    { _id: ObjectId(res.locals._id) },
+    {
+      $push: { groups: { _id: new_id, name: req.body.name} },
+    },
+    function (err, result) {
+      if (err) throw err;
+      res.status(200).json({ _id: new_id, name: req.body.name });
+    }
+  );
+});
+
+recordRoutes.route("/getGroups").get(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("login")
+    .findOne(
+      { _id: ObjectId(res.locals._id) },
+      { projection: { groups: 1 } },
+      function (err, result) {
+        if (err) throw err;
+        res.status(200).json(result);
+      }
+    );
+});
+
+recordRoutes.route("/getCharacters").post(authorization, (req, res) => {
+  if (!req.body.group_id || !ObjectId.isValid(req.body.group_id)) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
+
+  let db_connect = dbo.getDb("DandDT");
+  db_connect
+    .collection("characters")
+    .find({ group_ids: { $in: [req.body.group_id] }, author: res.locals._id })
+    .toArray((err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+});
+
+recordRoutes.route("/addCharacter").post(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  if(!req.body._id)
+    req.body._id = new ObjectId();
+  if(!ObjectId.isValid(req.body._id) || !req.body.group_id || !ObjectId.isValid(req.body.group_id)){
+    res.status(400).json({message: "Wrong parameters. Refresh page and try again"});
+    return;
+  }
+
+  default_character = {
+    _id:req.body._id,
+    author: res.locals._id,
+    name: "New character",
+    group_ids: [],
+    characterClass: "Fighter",
+    characterRace: "Human",
+    HP: 10,
+    AC: 10,
+    Speed: 30,
+    stats: {
+      str: 10,
+      dex: 10,
+      con: 10,
+      int: 10,
+      wis: 10,
+      cha: 10,
+    },
+    skills: [],
+    spells: [],
+    items: [],
+    notes: "",
+  };
+
+  delete req.body.author;
+  character = Object.assign(default_character, req.body.character);
+  if (!character.group_ids.includes(req.body.group_id)) {
+    character.group_ids.push(req.body.group_id);
+  }
+  
+  db_connect
+    .collection("characters")
+    .updateOne(
+      { _id: ObjectId(req.body._id) },
+      {$set:character},
+      { upsert: true }
+    ).then((result) => {
+      res.status(200).json(character);
+    });
+  
 });
 
 module.exports = recordRoutes;

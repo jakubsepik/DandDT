@@ -19,6 +19,29 @@
 files:[]
 }
 
+Leftpanel:
+players:[
+  group1
+  group2 {
+    name of group
+    characters: [
+      {
+        character_name
+        player_name
+        race
+        class
+        icon
+        HP
+        AC
+        Speed
+        
+
+      }
+    ]
+
+  }
+]
+
 random name generator, prerobit otvaranie a focus na editory, pridat oznacenie otvorenym editorom
 
 

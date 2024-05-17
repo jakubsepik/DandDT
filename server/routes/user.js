@@ -34,7 +34,6 @@ recordRoutes.route("/verify").get((req, res) => {
 
 recordRoutes.route("/login").post((req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  //console.log("login");
   myquery = { email: req.body.email };
   db_connect.collection("login").findOne(myquery, async function (err, result) {
     if (err) throw err;
