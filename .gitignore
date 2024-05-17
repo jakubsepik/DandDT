@@ -139,7 +139,7 @@ htmlbuild/
 *.docx
 *.pdf
 
-# Zip of production
+# Zip of production (deprecated)
 server.zip
 
 # End of https://www.toptal.com/developers/gitignore/api/node
