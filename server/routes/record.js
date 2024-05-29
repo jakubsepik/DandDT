@@ -431,4 +431,22 @@ recordRoutes.route("/addCharacter").post(authorization, (req, res) => {
   
 });
 
+recordRoutes.route("/deleteCharacter").post(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  console.log("delete");
+  if (!req.body._id || !ObjectId.isValid(req.body._id)) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
+
+  db_connect
+    .collection("characters")
+    .deleteOne({ _id: ObjectId(req.body._id), author: res.locals._id })
+    .then((result) => {
+      res.status(200).json(result);
+    });
+});
+
 module.exports = recordRoutes;

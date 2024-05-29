@@ -35,8 +35,19 @@ function LeftPanel() {
   function printCharacters() {
     if (characters)
       return characters.map((item) => {
-        return <Character {...item} key={item._id} />;
+        return <Character {...item} key={item._id} deleteCharacter={deleteCharacter} />;
       });
+  }
+
+  function deleteCharacter(id) {
+    axios.post(target + "deleteCharacter", { _id: id }).then((res) => {
+      if(res.status !== 200){
+        toast.error(res.data.message);
+        return;
+      }
+      toast.success("Character deleted");
+      setCharacters(characters.filter((item) => item._id !== id));
+    });
   }
 
   function addCharacter(character = null) {

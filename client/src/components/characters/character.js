@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaHeart, FaRunning, FaUserEdit } from "react-icons/fa";
 import { FaShield } from "react-icons/fa6";
+import { AiFillDelete } from "react-icons/ai";
+import toast from "react-hot-toast";
 
+var deleteConfirm = null;
 const statuses_template = {
   concentration: 0,
   blinded: 0,
@@ -23,6 +26,7 @@ const statuses_template = {
 
 function Character(props) {
   props = {
+    ...props,
     name: "Test",
     playerName: "Test",
     level: 1,
@@ -79,8 +83,29 @@ function Character(props) {
           </div>
         </div>
 
-        <div>
-          <FaUserEdit />
+        <div className="flex flex-row space-x-1 text-[120%]">
+          <span>
+            <FaUserEdit />
+          </span>
+          <span
+          className="hover:text-red-600 hover:cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              var date = new Date();
+              if (
+                deleteConfirm &&
+                date.getTime() - deleteConfirm.getTime() < 4000
+              ) {
+                props.deleteCharacter(props._id);
+                deleteConfirm = null;
+              } else {
+                toast("Click again to remove file");
+                deleteConfirm = date;
+              }
+            }}
+          >
+            <AiFillDelete />
+          </span>
         </div>
       </div>
 
