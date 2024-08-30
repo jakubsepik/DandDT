@@ -139,6 +139,9 @@ recordRoutes.route("/register").post((req, res) => {
               email: body.email,
               password: hash,
               selectionTree: [],
+              groups: [],
+              datedCreated: new Date(),
+              markedForDeletion: null
             })
             .then((result) => {
               res.json({ message: "Registration successful", _id: result });

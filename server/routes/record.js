@@ -339,7 +339,14 @@ recordRoutes.route("/addGroup").post(authorization, (req, res) => {
   db_connect.collection("login").updateOne(
     { _id: ObjectId(res.locals._id) },
     {
-      $push: { groups: { _id: new_id, name: req.body.name} },
+      $push: {
+        groups: {
+          _id: new_id,
+          name: req.body.name,
+          dateCreated: new Date(),
+          markedforDelete: null,
+        },
+      },
     },
     function (err, result) {
       if (err) throw err;
@@ -348,18 +355,51 @@ recordRoutes.route("/addGroup").post(authorization, (req, res) => {
   );
 });
 
-recordRoutes.route("/getGroups").get(authorization, (req, res) => {
+recordRoutes.route("/deleteGroup").post(authorization, (req, res) => {
+  if (!req.body._id || !ObjectId.isValid(req.body._id)) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
+    return;
+  }
+
   let db_connect = dbo.getDb("DandDT");
   db_connect
     .collection("login")
-    .findOne(
+    .updateOne(
       { _id: ObjectId(res.locals._id) },
-      { projection: { groups: 1 } },
-      function (err, result) {
-        if (err) throw err;
-        res.status(200).json(result);
+      {
+        $set: {
+          "groups.$[group].markedForDeletion": new Date(),
+        },
+      },
+      {
+        arrayFilters: [{ "group._id": ObjectId(req.body._id) }],
       }
-    );
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    });
+});
+
+recordRoutes.route("/getGroups").get(authorization, (req, res) => {
+  let db_connect = dbo.getDb("DandDT");
+  db_connect.collection("login").findOne(
+    { _id: ObjectId(res.locals._id) },
+    {
+      projection: {
+        groups: {
+          $elemMatch: {
+            markedForDeletion: { $eq: null },
+          },
+        },
+      },
+    },
+    function (err, result) {
+      if (err) throw err;
+      res.status(200).json(result);
+    }
+  );
 });
 
 recordRoutes.route("/getCharacters").post(authorization, (req, res) => {
@@ -382,15 +422,20 @@ recordRoutes.route("/getCharacters").post(authorization, (req, res) => {
 
 recordRoutes.route("/addCharacter").post(authorization, (req, res) => {
   let db_connect = dbo.getDb("DandDT");
-  if(!req.body._id)
-    req.body._id = new ObjectId();
-  if(!ObjectId.isValid(req.body._id) || !req.body.group_id || !ObjectId.isValid(req.body.group_id)){
-    res.status(400).json({message: "Wrong parameters. Refresh page and try again"});
+  if (!req.body._id) req.body._id = new ObjectId();
+  if (
+    !ObjectId.isValid(req.body._id) ||
+    !req.body.group_id ||
+    !ObjectId.isValid(req.body.group_id)
+  ) {
+    res
+      .status(400)
+      .json({ message: "Wrong parameters. Refresh page and try again" });
     return;
   }
 
   default_character = {
-    _id:req.body._id,
+    _id: req.body._id,
     author: res.locals._id,
     name: "New character",
     group_ids: [],
@@ -411,6 +456,8 @@ recordRoutes.route("/addCharacter").post(authorization, (req, res) => {
     spells: [],
     items: [],
     notes: "",
+    dateCreated: new Date(),
+    markedforDelete: null,
   };
 
   delete req.body.author;
@@ -418,17 +465,17 @@ recordRoutes.route("/addCharacter").post(authorization, (req, res) => {
   if (!character.group_ids.includes(req.body.group_id)) {
     character.group_ids.push(req.body.group_id);
   }
-  
+
   db_connect
     .collection("characters")
     .updateOne(
       { _id: ObjectId(req.body._id) },
-      {$set:character},
+      { $set: character },
       { upsert: true }
-    ).then((result) => {
+    )
+    .then((result) => {
       res.status(200).json(character);
     });
-  
 });
 
 recordRoutes.route("/deleteCharacter").post(authorization, (req, res) => {
@@ -443,7 +490,10 @@ recordRoutes.route("/deleteCharacter").post(authorization, (req, res) => {
 
   db_connect
     .collection("characters")
-    .deleteOne({ _id: ObjectId(req.body._id), author: res.locals._id })
+    .updateOne(
+      { _id: ObjectId(req.body._id), author: res.locals._id },
+      { $set: { markedforDelete: new Date() } }
+    )
     .then((result) => {
       res.status(200).json(result);
     });

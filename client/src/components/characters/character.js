@@ -84,7 +84,7 @@ function Character(props) {
         </div>
 
         <div className="flex flex-row space-x-1 text-[120%]">
-          <span>
+          <span className="hover:text-blue-400 hover:cursor-pointer">
             <FaUserEdit />
           </span>
           <span

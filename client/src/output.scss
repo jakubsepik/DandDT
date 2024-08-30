@@ -839,6 +839,10 @@ video {
   align-items: center !important;
 }
 
+.items-stretch {
+  align-items: stretch !important;
+}
+
 .justify-center {
   justify-content: center !important;
 }
@@ -1168,6 +1172,10 @@ video {
   font-size: 120% !important;
 }
 
+.text-\[140\%\] {
+  font-size: 140% !important;
+}
+
 .font-bold {
   font-weight: 700 !important;
 }
@@ -1332,6 +1340,10 @@ video {
 
 .hover\:text-red-600:hover {
   color: #dc2626 !important;
+}
+
+.hover\:text-blue-400:hover {
+  color: #60a5fa !important;
 }
 
 .hover\:brightness-110:hover {

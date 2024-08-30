@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import CreatableSelect, { useCreatable } from "react-select/creatable";
-import { MdGroups } from "react-icons/md";
+import { MdGroups, MdOutlineNotStarted } from "react-icons/md";
+import { AiFillDelete } from "react-icons/ai";
+import { FaUserPlus } from "react-icons/fa";
 import Character from "./character";
 import toast from "react-hot-toast";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 const target = process.env.REACT_APP_HOST_BACKEND;
+
+var deleteConfirm = null;
 
 function LeftPanel() {
   const [selected_group, setSelected_group] = useState(null);
@@ -35,13 +39,19 @@ function LeftPanel() {
   function printCharacters() {
     if (characters)
       return characters.map((item) => {
-        return <Character {...item} key={item._id} deleteCharacter={deleteCharacter} />;
+        return (
+          <Character
+            {...item}
+            key={item._id}
+            deleteCharacter={deleteCharacter}
+          />
+        );
       });
   }
 
   function deleteCharacter(id) {
     axios.post(target + "deleteCharacter", { _id: id }).then((res) => {
-      if(res.status !== 200){
+      if (res.status !== 200) {
         toast.error(res.data.message);
         return;
       }
@@ -62,6 +72,23 @@ function LeftPanel() {
           toast.success("Character added");
           setCharacters([...(characters ? characters : []), res.data]);
         }
+      });
+  }
+
+  function deleteGroup() {
+    axios
+      .post(target + "deleteGroup", { _id: selected_group.value })
+      .then((res) => {
+        if (res.status !== 200) {
+          toast.error(res.data.message);
+          return;
+        }
+        toast.success("Group deleted");
+        setOptions(
+          options.filter((item) => item.value !== selected_group.value)
+        );
+        setSelected_group(null);
+        setCharacters([]);
       });
   }
 
@@ -120,15 +147,36 @@ function LeftPanel() {
         {selected_group !== null ? (
           <div className="h-full flex flex-col items-center text-sm overflow-y-auto mb-6 no-scrollbar">
             {printCharacters()}
-            <button
-              className="bg-orange-500 w-[90%] rounded-md mt-3 py-1"
-              onClick={() => addCharacter()}
-            >
-              Add new character
-            </button>
-            <button className="bg-green-500 w-[90%] rounded-md mt-2 py-1">
-              Start session
-            </button>
+            <div className="flex flex-row items-stretch w-full justify-center space-x-3 mt-2 text-[140%]">
+              <button
+                className="bg-orange-500 rounded-md p-2"
+                onClick={() => addCharacter()}
+              >
+                <FaUserPlus />
+              </button>
+              <button className="bg-green-500 rounded-md p-2">
+                <MdOutlineNotStarted />
+              </button>
+              <button
+                className="bg-red-600 rounded-md p-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  var date = new Date();
+                  if (
+                    deleteConfirm &&
+                    date.getTime() - deleteConfirm.getTime() < 4000
+                  ) {
+                    deleteGroup();
+                    deleteConfirm = null;
+                  } else {
+                    toast("Click again to remove file");
+                    deleteConfirm = date;
+                  }
+                }}
+              >
+                <AiFillDelete />
+              </button>
+            </div>
           </div>
         ) : (
           <div className="h-full flex flex-col items-center">
